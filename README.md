@@ -4,8 +4,8 @@ Monorepo da **Menvi** (produto da **M2 Solutions**). Objetivo: cardápio digital
 conversão para o cliente final + CRM operacional para o restaurante parceiro, tudo alimentado
 por uma API única como fonte de verdade.
 
-> **Escopo desta fase:** backend completo (`apps/api`) — Fase 1 da refatoração estrutural.
-> As apps de front (`menu-web`, `crm-web`) entram em fases seguintes do roadmap.
+> **Escopo atual:** backend completo (`apps/api`) + scaffold monorepo frontend (`apps/menu-web`, `apps/crm-web`, `packages/{ui,types,utils,config}`) — Fases 1 e 2.
+> Funcionalidade do menu-web e crm-web (checkout, Kanban realtime) entram nas Fases 3 e 4.
 
 ---
 
@@ -14,24 +14,22 @@ por uma API única como fonte de verdade.
 ```
 menvi-platform/
 ├─ apps/
-│  └─ api/                  # FastAPI — fonte de verdade
-│     ├─ core/              # config, db, security, deps, realtime, logging, errors
-│     ├─ domain/            # domínios (um por área de negócio)
-│     │  ├─ auth/           # login, refresh
-│     │  ├─ users/          # membros do restaurante (RBAC)
-│     │  ├─ restaurants/    # restaurante + settings
-│     │  ├─ menu/           # categories + products + options
-│     │  ├─ customers/      # clientes finais
-│     │  ├─ orders/         # pedidos + items + events (audit)
-│     │  ├─ payments/       # interface PaymentGateway (mock + hooks)
-│     │  ├─ billing/        # subscription plan (SaaS da M2)
-│     │  ├─ whatsapp/       # templates outbound (stub)
-│     │  └─ audit/          # log genérico de ações sensíveis
-│     ├─ public/            # endpoints sem auth (cardápio público + checkout)
-│     ├─ admin/             # endpoints `/admin/*` protegidos por token
-│     ├─ seed.py            # `python -m apps.api.seed`
-│     ├─ admin_cli.py       # `python -m apps.api.admin_cli ...`
-│     └─ main.py            # wiring FastAPI
+│  ├─ api/                  # FastAPI — fonte de verdade
+│  │  ├─ core/              # config, db, security, deps, realtime, logging, errors
+│  │  ├─ domain/            # domínios (auth, users, restaurants, menu, customers,
+│  │  │                     #   orders, payments, billing, whatsapp, audit)
+│  │  ├─ public/            # endpoints sem auth (cardápio público + checkout)
+│  │  ├─ admin/             # endpoints `/admin/*` protegidos por token
+│  │  ├─ seed.py            # `python -m apps.api.seed`
+│  │  ├─ admin_cli.py       # `python -m apps.api.admin_cli ...`
+│  │  └─ main.py            # wiring FastAPI
+│  ├─ menu-web/             # Next.js 15 — cardápio público (cliente final)
+│  └─ crm-web/              # Next.js 15 — painel do restaurante (login + pedidos)
+├─ packages/
+│  ├─ config/               # tsconfig, tailwind preset, eslint flat config
+│  ├─ types/                # tipos compartilhados (mirror dos schemas da API)
+│  ├─ utils/                # formatadores (BRL, telefone, status de pedido)
+│  └─ ui/                   # componentes shadcn-style (Button, Card, Badge, …)
 ├─ alembic/                 # migrations (fonte de verdade = Base.metadata)
 ├─ infra/                   # docker-compose, Dockerfile.api
 └─ tests/                   # pytest (unit + integration)
@@ -168,13 +166,37 @@ alembic downgrade -1
 
 ---
 
-## Roadmap (fora do escopo desta Fase 1)
+## Frontend (Fase 2 — scaffold)
 
-- **Fase 2** — scaffold monorepo Next.js (`pnpm + turborepo`) + `packages/{ui,types,utils,config}` + shadcn/ui.
-- **Fase 3** — `apps/menu-web` (cardápio digital, Next.js 15, SSR, Pix real via Mercado Pago).
-- **Fase 4** — `apps/crm-web` (Kanban realtime, som, RBAC, relatórios básicos).
-- **Fase 5** — WhatsApp Business Cloud API (templates de status outbound) + Stripe Billing (cobrança M2).
-- **Fase 6** — observabilidade (Sentry/PostHog/OTel), E2E (Playwright), deploy staging + produção, runbook.
+### Requisitos
+- Node.js 20+ e [pnpm](https://pnpm.io) 9.15.1 (`npm i -g pnpm@9.15.1`).
+
+### Instalação e execução
+```bash
+pnpm install                 # instala tudo do monorepo
+pnpm dev                     # roda menu-web (3000) e crm-web (3001) em paralelo via turbo
+
+# individualmente:
+pnpm --filter @menvi/menu-web dev    # http://localhost:3000
+pnpm --filter @menvi/crm-web dev     # http://localhost:3001
+```
+
+As duas apps apontam para a API em `NEXT_PUBLIC_API_URL` (padrão `http://localhost:8000`).
+Copie `.env.example` para `.env.local` dentro de cada app se quiser sobrescrever.
+
+### Checks
+```bash
+pnpm typecheck               # tsc --noEmit em todos os workspaces
+pnpm lint                    # eslint flat config + Next plugin
+pnpm build                   # next build em menu-web e crm-web
+```
+
+### Roadmap (fora do escopo da Fase 2)
+
+- **Fase 3** — `apps/menu-web` funcional: carrinho, checkout, Pix real via Mercado Pago.
+- **Fase 4** — `apps/crm-web` funcional: Kanban realtime (WebSocket), som, RBAC, relatórios.
+- **Fase 5** — WhatsApp Business Cloud API + Stripe Billing.
+- **Fase 6** — observabilidade (Sentry/PostHog/OTel), E2E (Playwright), deploy staging + produção.
 
 > `apps/admin-web` (ERP interno da M2) **fica fora deste monorepo** — projeto à parte.
 > A API já expõe `/admin/*` e a CLI `admin_cli.py` cobre o que a M2 precisa no dia-a-dia.
