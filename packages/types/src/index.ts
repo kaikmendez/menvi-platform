@@ -158,3 +158,38 @@ export interface RealtimeEvent<T = unknown> {
   event: 'order.created' | 'order.status_changed';
   payload: T;
 }
+
+/** Espelha `RestaurantOut` de apps/api/domain/restaurants/schemas.py. */
+export interface Restaurant {
+  id: string;
+  slug: string;
+  name: string;
+  description: string | null;
+  whatsapp_phone: string | null;
+  logo_url: string | null;
+  cover_url: string | null;
+  is_open: boolean;
+}
+
+export interface RestaurantUpdatePayload {
+  name?: string | null;
+  description?: string | null;
+  whatsapp_phone?: string | null;
+  logo_url?: string | null;
+  cover_url?: string | null;
+  is_open?: boolean | null;
+}
+
+export interface RestaurantSettings {
+  delivery_fee: string;
+  min_order_amount: string;
+  accepts_pix: boolean;
+  accepts_card: boolean;
+  accepts_cash: boolean;
+  opening_hours: string | null;
+}
+
+export interface OrderStatusUpdatePayload {
+  status: OrderStatus;
+  note?: string | null;
+}
