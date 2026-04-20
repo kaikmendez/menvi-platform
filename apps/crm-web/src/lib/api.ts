@@ -1,8 +1,17 @@
 import type {
+  Category,
+  CategoryCreatePayload,
+  CategoryUpdatePayload,
   CurrentUserOut,
   Order,
   OrderStatus,
   OrderStatusUpdatePayload,
+  Product,
+  ProductCreatePayload,
+  ProductOption,
+  ProductOptionCreatePayload,
+  ProductOptionUpdatePayload,
+  ProductUpdatePayload,
   Restaurant,
   RestaurantSettings,
   RestaurantUpdatePayload,
@@ -95,4 +104,118 @@ export async function updateOrderStatus(
     headers: authHeaders(token),
     body: JSON.stringify(payload),
   });
+}
+
+// ---------- Categorias ----------
+export async function listCategories(token: string): Promise<Category[]> {
+  return request<Category[]>('/crm/categories', { headers: authHeaders(token) });
+}
+
+export async function createCategory(
+  token: string,
+  payload: CategoryCreatePayload,
+): Promise<Category> {
+  return request<Category>('/crm/categories', {
+    method: 'POST',
+    headers: authHeaders(token),
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function updateCategory(
+  token: string,
+  id: string,
+  payload: CategoryUpdatePayload,
+): Promise<Category> {
+  return request<Category>(`/crm/categories/${id}`, {
+    method: 'PATCH',
+    headers: authHeaders(token),
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function deleteCategory(token: string, id: string): Promise<void> {
+  const res = await fetch(`${API_URL}/crm/categories/${id}`, {
+    method: 'DELETE',
+    headers: authHeaders(token),
+  });
+  if (!res.ok) throw new ApiError(res.status, await res.text());
+}
+
+// ---------- Produtos ----------
+export async function listProducts(token: string): Promise<Product[]> {
+  return request<Product[]>('/crm/products', { headers: authHeaders(token) });
+}
+
+export async function getProduct(token: string, id: string): Promise<Product> {
+  return request<Product>(`/crm/products/${id}`, { headers: authHeaders(token) });
+}
+
+export async function createProduct(
+  token: string,
+  payload: ProductCreatePayload,
+): Promise<Product> {
+  return request<Product>('/crm/products', {
+    method: 'POST',
+    headers: authHeaders(token),
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function updateProduct(
+  token: string,
+  id: string,
+  payload: ProductUpdatePayload,
+): Promise<Product> {
+  return request<Product>(`/crm/products/${id}`, {
+    method: 'PATCH',
+    headers: authHeaders(token),
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function deleteProduct(token: string, id: string): Promise<void> {
+  const res = await fetch(`${API_URL}/crm/products/${id}`, {
+    method: 'DELETE',
+    headers: authHeaders(token),
+  });
+  if (!res.ok) throw new ApiError(res.status, await res.text());
+}
+
+// ---------- Adicionais ----------
+export async function addProductOption(
+  token: string,
+  productId: string,
+  payload: ProductOptionCreatePayload,
+): Promise<ProductOption> {
+  return request<ProductOption>(`/crm/products/${productId}/options`, {
+    method: 'POST',
+    headers: authHeaders(token),
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function updateProductOption(
+  token: string,
+  productId: string,
+  optionId: string,
+  payload: ProductOptionUpdatePayload,
+): Promise<ProductOption> {
+  return request<ProductOption>(`/crm/products/${productId}/options/${optionId}`, {
+    method: 'PATCH',
+    headers: authHeaders(token),
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function deleteProductOption(
+  token: string,
+  productId: string,
+  optionId: string,
+): Promise<void> {
+  const res = await fetch(`${API_URL}/crm/products/${productId}/options/${optionId}`, {
+    method: 'DELETE',
+    headers: authHeaders(token),
+  });
+  if (!res.ok) throw new ApiError(res.status, await res.text());
 }
