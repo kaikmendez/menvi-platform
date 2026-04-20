@@ -6,71 +6,41 @@
     <title>Login CRM | Menvi</title>
     <style>
       :root {
-        --bg1: #170f4f;
-        --bg2: #052e4f;
-        --panel: rgba(17, 28, 60, 0.88);
-        --panel-2: rgba(37, 48, 78, 0.9);
-        --text: #e8efff;
-        --muted: #aac0ea;
-        --border: rgba(184, 202, 244, 0.28);
-        --primary: #8f67ff;
+        --bg: #f6f8fb;
+        --surface: #fff;
+        --text: #1f2a37;
+        --muted: #6f8098;
+        --border: #d9e1ec;
+        --primary: #2f6fed;
       }
       * { box-sizing: border-box; }
-      body {
-        margin: 0; min-height: 100vh; color: var(--text);
-        font-family: Inter, Arial, sans-serif;
-        background: radial-gradient(1000px 500px at 0 -20%, #28126d 0, transparent 50%),
-                    linear-gradient(135deg, var(--bg1), var(--bg2));
-      }
-      .shell { max-width: 1320px; margin: 0 auto; padding: 34px 18px; }
-      .top {
-        border: 1px solid var(--border); border-radius: 18px; padding: 16px 18px;
-        display: flex; justify-content: space-between; align-items: center; background: rgba(7, 13, 39, 0.55);
-      }
-      .brand { display: flex; gap: 10px; align-items: center; font-size: 36px; font-weight: 800; }
-      .dot { width: 12px; height: 12px; border-radius: 999px; background: #2d8cff; box-shadow: 0 0 0 6px rgba(45,140,255,.2); }
-      .panel {
-        margin-top: 18px; border: 1px solid var(--border); border-radius: 24px;
-        background: linear-gradient(120deg, var(--panel), rgba(15, 26, 57, 0.9));
-        padding: 26px;
-      }
-      h1 { margin: 0 0 10px; font-size: 52px; }
-      p { color: var(--muted); font-size: 24px; line-height: 1.5; }
-      .card {
-        margin-top: 20px; max-width: 760px; border: 1px solid var(--border);
-        border-radius: 16px; background: var(--panel-2); padding: 16px;
-      }
-      .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
-      .input {
-        width: 100%; border: 1px solid rgba(169, 184, 220, .22); border-radius: 12px;
-        background: rgba(16, 24, 48, .8); color: #fff; padding: 12px 14px; font-size: 22px;
-      }
+      body { margin: 0; font-family: Inter, Arial, sans-serif; background: var(--bg); color: var(--text); }
+      .shell { max-width: 900px; margin: 30px auto; padding: 0 16px; }
+      .top { border: 1px solid var(--border); background: #fff; border-radius: 14px; padding: 14px; font-weight: 800; color: var(--primary); }
+      .panel { margin-top: 14px; border: 1px solid var(--border); background: #fff; border-radius: 16px; padding: 18px; }
+      h1 { margin: 0 0 8px; font-size: 32px; }
+      p { color: var(--muted); font-size: 14px; line-height: 1.5; }
+      .card { margin-top: 12px; border: 1px solid var(--border); border-radius: 12px; background: #fff; padding: 14px; max-width: 620px; }
+      .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
+      .input { width: 100%; border: 1px solid var(--border); border-radius: 10px; padding: 10px 11px; font-size: 14px; }
       .btn {
-        margin-top: 14px; border: 0; border-radius: 14px; padding: 12px 18px;
-        background: linear-gradient(135deg, #7e55ff, #a876ff); color: white;
-        font-size: 28px; font-weight: 800; cursor: pointer;
+        margin-top: 10px; border: 1px solid #bfd0fb; border-radius: 10px; padding: 9px 14px;
+        background: var(--primary); color: #fff; font-size: 14px; font-weight: 700; cursor: pointer;
       }
       .toast {
-        position: fixed; right: 18px; bottom: 18px; border: 1px solid var(--border); border-radius: 14px;
-        padding: 14px 18px; background: rgba(4, 10, 33, .92); color: #fff; opacity: 0; transition: .2s;
+        position: fixed; right: 18px; bottom: 18px; background: #1f2a37; color: #fff;
+        border-radius: 10px; padding: 10px 12px; opacity: 0; transition: .2s;
       }
       .toast.show { opacity: 1; }
-      @media (max-width: 900px) {
-        h1 { font-size: 38px; }
-        p { font-size: 19px; }
-        .row { grid-template-columns: 1fr; }
-      }
+      @media (max-width: 760px) { .row { grid-template-columns: 1fr; } }
     </style>
   </head>
   <body>
     <div class="shell">
-      <div class="top">
-        <div class="brand"><span class="dot"></span> Menvi Platform</div>
-      </div>
-
+      <div class="top">Menvi CRM</div>
       <section class="panel">
         <h1>Login CRM</h1>
-        <p>Faça login para acompanhar pedidos em tempo real.</p>
+        <p>Acesso exclusivo para o restaurante gerenciar pedidos.</p>
 
         <div class="card">
           <p>Credenciais de teste: <strong>admin@menvi.com</strong> / <strong>123456</strong>.</p>
@@ -88,9 +58,7 @@
       document.getElementById('loginBtn').addEventListener('click', () => {
         const toast = document.getElementById('toast');
         toast.classList.add('show');
-        setTimeout(() => {
-          window.location.href = '/crm/dashboard';
-        }, 650);
+        setTimeout(() => { window.location.href = '/crm/dashboard'; }, 500);
       });
     </script>
   </body>
