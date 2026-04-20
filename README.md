@@ -41,6 +41,8 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
+> Se aparecer erro de `email_validator`, rode novamente `pip install -r requirements.txt`.
+
 3. Configurar env:
 ```bash
 cp .env.example .env
