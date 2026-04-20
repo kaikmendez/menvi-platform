@@ -78,6 +78,27 @@ jobs:
       - name: Run tests
         run: pytest
 
+  frontend:
+    name: Frontend (pnpm typecheck + lint + build)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: pnpm
+      - name: Install deps
+        run: pnpm install --frozen-lockfile
+      - name: Typecheck
+        run: pnpm typecheck
+      - name: Lint
+        run: pnpm lint
+      - name: Build
+        run: pnpm build
+
   import-smoke:
     name: Import smoke test
     runs-on: ubuntu-latest
