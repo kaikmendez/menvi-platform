@@ -1,8 +1,6 @@
-node_modules
-.next
-dist
-.turbo
-pnpm-lock.yaml
+__pycache__/
+*.pyc
+.venv/
 .env
-*.log
-coverage
+node_modules/
+.DS_Store

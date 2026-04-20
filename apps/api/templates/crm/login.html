@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Login CRM</h1>
+<p>Use admin@menvi.com / 123456 após chamar <code>POST /auth/seed-admin</code>.</p>
+<form method="post" action="#">
+  <input placeholder="E-mail" />
+  <input placeholder="Senha" type="password" />
+  <button>Entrar</button>
+</form>
+{% endblock %}

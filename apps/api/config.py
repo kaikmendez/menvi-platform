@@ -1,0 +1,15 @@
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+class Settings(BaseSettings):
+    database_url: str = 'postgresql+psycopg2://postgres:postgres@localhost:5432/menvi'
+    jwt_secret: str = 'super-secret'
+    jwt_algorithm: str = 'HS256'
+    jwt_expires_minutes: int = 1440
+    redis_url: str = 'redis://localhost:6379/0'
+    port: int = 8000
+
+    model_config = SettingsConfigDict(env_file='.env', env_file_encoding='utf-8', extra='ignore')
+
+
+settings = Settings()
