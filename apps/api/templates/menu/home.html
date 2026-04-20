@@ -1,17 +1,60 @@
 {% extends 'base.html' %}
 {% block title %}Menu Digital | Menvi{% endblock %}
 {% block content %}
-<h1>Cardápio Digital</h1>
-<p>Experiência premium para o cliente escolher, personalizar e finalizar pedidos em poucos cliques.</p>
+<section class="hero">
+  <div>
+    <span class="chip chip-hot">⭐ Restaurante parceiro top da região</span>
+    <h1>Sabores artesanais para pedir em poucos cliques.</h1>
+    <p class="hero-text">Cozinha autoral, ingredientes frescos e entrega ágil. Monte seu pedido e acompanhe tudo em uma experiência de compra premium.</p>
 
-<div class="kpis">
-  <div class="kpi"><span class="muted">Tempo médio</span><strong>4 min</strong></div>
-  <div class="kpi"><span class="muted">Itens em destaque</span><strong>12</strong></div>
-  <div class="kpi"><span class="muted">Avaliação</span><strong>4.9 ★</strong></div>
-</div>
+    <div class="hero-metrics">
+      <div class="metric"><small>Avaliação</small><strong>4.9 ★</strong></div>
+      <div class="metric"><small>Entrega</small><strong>35–50 min</strong></div>
+      <div class="metric"><small>Pedido mínimo</small><strong>R$ 25,00</strong></div>
+      <div class="metric"><small>Status</small><strong class="success">Aberto agora</strong></div>
+    </div>
 
-<div style="margin-top:16px" class="row">
-  <a class="btn btn-primary" href="/menu/categories">Explorar categorias</a>
-  <a class="btn btn-secondary" href="/menu/cart">Ver carrinho</a>
-</div>
+    <div class="hero-cta">
+      <a class="btn btn-primary btn-lg" href="/menu/products">Peça agora</a>
+      <a class="btn btn-secondary btn-lg" href="/menu/categories">Explorar categorias</a>
+    </div>
+  </div>
+
+  <aside class="hero-card">
+    <div class="hero-image" aria-hidden="true"></div>
+    <h3>Oferta da semana</h3>
+    <p class="muted">Combo Executivo + Bebida Premium</p>
+    <div class="row">
+      <strong class="price">R$ 72,00</strong>
+      <span class="badge badge-sale">-15%</span>
+    </div>
+  </aside>
+</section>
+
+<section style="margin-top: 20px;">
+  <div class="section-head">
+    <h2>Mais pedidos</h2>
+    <a href="/menu/products" class="section-link">Ver cardápio completo</a>
+  </div>
+
+  <div class="product-grid">
+    <article class="product-card">
+      <div class="product-media"></div>
+      <div class="product-body">
+        <div class="row"><h3>Combo Executivo</h3><span class="badge">Mais pedido</span></div>
+        <p class="muted">Prato principal + acompanhamento + bebida.</p>
+        <div class="row"><strong class="price">R$ 67,00</strong><a class="btn btn-primary" href="/menu/product/combo-executivo">Adicionar</a></div>
+      </div>
+    </article>
+
+    <article class="product-card">
+      <div class="product-media alt"></div>
+      <div class="product-body">
+        <div class="row"><h3>Hambúrguer Artesanal</h3><span class="badge badge-new">Novo</span></div>
+        <p class="muted">Blend bovino, brioche e fritas crocantes.</p>
+        <div class="row"><strong class="price">R$ 39,90</strong><a class="btn btn-primary" href="/menu/product/hamburguer-artesanal">Adicionar</a></div>
+      </div>
+    </article>
+  </div>
+</section>
 {% endblock %}

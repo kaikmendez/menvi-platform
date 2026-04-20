@@ -1,18 +1,25 @@
 {% extends 'base.html' %}
 {% block title %}Carrinho | Menvi{% endblock %}
 {% block content %}
-<h2>Checkout do pedido</h2>
-<p>Selecione itens do cardápio, informe seus dados e envie seu pedido para o restaurante.</p>
+<section class="section-head">
+  <div>
+    <h2>Finalizar pedido</h2>
+    <p class="muted">Revise seus itens e confirme a entrega em segundos.</p>
+  </div>
+  <span class="badge">Checkout seguro</span>
+</section>
 
-<div class="grid" style="grid-template-columns: 1.2fr .8fr; align-items:start;">
+<div class="checkout-layout" style="margin-top:16px;">
   <section class="card">
-    <h3>1) Monte seu pedido</h3>
+    <h3>Itens do pedido</h3>
+    <p class="muted">Escolha produto, adicionais e quantidade.</p>
+
     <div class="row" style="margin-bottom:10px;">
       <label for="product-select" class="muted">Produto</label>
       <select id="product-select" class="select" style="max-width:340px;"></select>
     </div>
 
-    <div id="product-options" style="margin-bottom:10px;"></div>
+    <div id="product-options" class="option-group" style="margin-bottom:10px;"></div>
 
     <div class="row" style="margin-bottom:10px;">
       <label for="item-qty" class="muted">Quantidade</label>
@@ -26,12 +33,15 @@
 
     <button class="btn btn-secondary" id="add-item-btn" type="button">Adicionar item</button>
 
-    <h3 style="margin-top:16px;">Itens adicionados</h3>
-    <div id="cart-items" class="order-items"></div>
+    <div style="margin-top:14px;">
+      <h3>Seu carrinho</h3>
+      <div id="cart-items" class="order-items"></div>
+    </div>
   </section>
 
-  <section class="card">
-    <h3>2) Seus dados</h3>
+  <aside class="card summary-card">
+    <h3>Resumo financeiro</h3>
+
     <div style="margin-bottom:10px;">
       <label class="muted" for="customer-name">Nome</label>
       <input id="customer-name" class="input" type="text" placeholder="Seu nome" />
@@ -45,13 +55,14 @@
       <input id="order-notes" class="input" type="text" placeholder="Ex.: entregar na portaria" />
     </div>
 
-    <div class="row" style="margin-top:14px;">
-      <strong>Total: <span id="order-total">R$ 0,00</span></strong>
-      <button class="btn btn-primary" id="submit-order-btn" type="button">Finalizar pedido</button>
+    <div class="checkout-summary">
+      <span>Subtotal</span>
+      <strong id="order-total">R$ 0,00</strong>
     </div>
 
+    <button class="btn btn-primary btn-lg" id="submit-order-btn" type="button" style="width:100%; margin-top:12px;">Confirmar pedido</button>
     <p id="order-feedback" class="muted" style="margin-top:12px;"></p>
-  </section>
+  </aside>
 </div>
 
 <script src="/static/js/menu-cart.js"></script>

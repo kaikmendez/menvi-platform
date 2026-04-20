@@ -1,12 +1,49 @@
 {% extends 'base.html' %}
 {% block title %}Categorias | Menvi{% endblock %}
 {% block content %}
-<h2>Categorias</h2>
-<p>Organize o catálogo por sessões para facilitar descoberta e conversão.</p>
+<section class="section-head">
+  <div>
+    <h2>Categorias</h2>
+    <p class="muted">Navegue rápido pelas seções e encontre seu pedido ideal.</p>
+  </div>
+  <a class="btn btn-secondary" href="/menu/products">Ver todos os itens</a>
+</section>
 
-<div class="grid">
-  <article class="card row"><div><h3>Pizzas</h3><small class="muted">18 itens</small></div><a class="btn btn-secondary" href="/menu/products">Ver</a></article>
-  <article class="card row"><div><h3>Bebidas</h3><small class="muted">12 itens</small></div><a class="btn btn-secondary" href="/menu/products">Ver</a></article>
-  <article class="card row"><div><h3>Sobremesas</h3><small class="muted">8 itens</small></div><a class="btn btn-secondary" href="/menu/products">Ver</a></article>
+<div class="category-chips">
+  <a class="chip active" href="#cat-destaques">Destaques</a>
+  <a class="chip" href="#cat-combos">Combos</a>
+  <a class="chip" href="#cat-burgers">Hambúrgueres</a>
+  <a class="chip" href="#cat-bebidas">Bebidas</a>
+  <a class="chip" href="#cat-sobremesas">Sobremesas</a>
+</div>
+
+<div class="category-grid" style="margin-top:16px;">
+  <article class="category-card" id="cat-destaques">
+    <div class="category-icon">🔥</div>
+    <h3>Destaques da casa</h3>
+    <p>Seleção com maior taxa de recompra.</p>
+    <a href="/menu/products" class="btn btn-primary">Explorar</a>
+  </article>
+
+  <article class="category-card" id="cat-combos">
+    <div class="category-icon">🍱</div>
+    <h3>Combos econômicos</h3>
+    <p>Mais valor por pedido com itens combinados.</p>
+    <a href="/menu/products" class="btn btn-primary">Explorar</a>
+  </article>
+
+  <article class="category-card" id="cat-burgers">
+    <div class="category-icon">🍔</div>
+    <h3>Hambúrgueres</h3>
+    <p>Artesanais com opções de adicionais.</p>
+    <a href="/menu/products" class="btn btn-primary">Explorar</a>
+  </article>
+
+  <article class="category-card" id="cat-bebidas">
+    <div class="category-icon">🥤</div>
+    <h3>Bebidas</h3>
+    <p>Sucos, refrigerantes e drinks sem álcool.</p>
+    <a href="/menu/products" class="btn btn-primary">Explorar</a>
+  </article>
 </div>
 {% endblock %}

@@ -7,15 +7,28 @@
     <link rel="stylesheet" href="/static/css/menu.css" />
   </head>
   <body>
+    <div class="app-bg"></div>
     <div class="container">
       <header class="topbar">
-        <div class="brand">Menvi Cardápio</div>
+        <a href="/" class="brand-wrap" aria-label="Início">
+          <div class="brand-mark">M</div>
+          <div>
+            <div class="brand">Menvi Kitchen</div>
+            <small class="brand-sub">Delivery premium • 35-50 min</small>
+          </div>
+        </a>
+
         <nav class="nav">
           <a href="/" data-nav="home">Início</a>
           <a href="/menu/categories" data-nav="categories">Categorias</a>
           <a href="/menu/products" data-nav="products">Produtos</a>
           <a href="/menu/cart" data-nav="cart">Carrinho</a>
         </nav>
+
+        <a href="/menu/cart" class="cart-pill" aria-label="Abrir carrinho">
+          <span>🛒</span>
+          <strong>Finalizar pedido</strong>
+        </a>
       </header>
 
       <main class="panel"><div class="panel-inner">{% block content %}{% endblock %}</div></main>

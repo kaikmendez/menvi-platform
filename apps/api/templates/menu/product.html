@@ -1,18 +1,81 @@
 {% extends 'base.html' %}
 {% block title %}Produto {{ product_id }} | Menvi{% endblock %}
 {% block content %}
-<h2>Produto {{ product_id }}</h2>
-<p>Customize opcionais e aumente ticket médio com sugestões inteligentes.</p>
+<section class="product-detail-layout">
+  <article class="card product-preview">
+    <div class="product-media large"></div>
+    <span class="badge">Mais pedido</span>
+    <h2>Hambúrguer Artesanal da Casa</h2>
+    <p class="muted">Blend bovino de 180g, cheddar cremoso, cebola caramelizada e pão brioche tostado na manteiga.</p>
 
-<div class="card" style="max-width:520px;">
-  <h3>Pizza Especial da Casa</h3>
-  <p class="muted">Escolha o tamanho, borda e adicionais.</p>
-  <label class="muted">Tamanho</label>
-  <select class="select" style="margin-top:6px; margin-bottom:12px;">
-    <option>Média</option>
-    <option>Grande (+R$8)</option>
-    <option>Família (+R$16)</option>
-  </select>
-  <button class="btn btn-success" onclick="showToast('Item adicionado ao carrinho')">Adicionar ao carrinho</button>
-</div>
+    <div class="kpis">
+      <div class="kpi"><span class="muted">Avaliação</span><strong>4.8 ★</strong></div>
+      <div class="kpi"><span class="muted">Preparo</span><strong>25 min</strong></div>
+      <div class="kpi"><span class="muted">Entrega</span><strong>35-50 min</strong></div>
+    </div>
+  </article>
+
+  <aside class="card">
+    <p class="muted">Preço base</p>
+    <h3 class="price" style="margin: 0 0 14px;" id="base-price" data-base="39.90">R$ 39,90</h3>
+
+    <label class="muted" for="size-select">Tamanho</label>
+    <select id="size-select" class="select" style="margin-top:6px; margin-bottom:12px;">
+      <option value="0">Padrão</option>
+      <option value="6">Grande (+R$ 6,00)</option>
+      <option value="12">Duplo (+R$ 12,00)</option>
+    </select>
+
+    <div class="option-group">
+      <p class="muted" style="margin-top:0;">Adicionais</p>
+      <label class="row option-row"><span>Queijo extra</span><small>+R$ 3,50</small><input type="checkbox" data-extra="3.5" /></label>
+      <label class="row option-row"><span>Bacon crocante</span><small>+R$ 5,00</small><input type="checkbox" data-extra="5" /></label>
+      <label class="row option-row"><span>Molho especial</span><small>+R$ 2,00</small><input type="checkbox" data-extra="2" /></label>
+    </div>
+
+    <div style="margin-top:12px;">
+      <label class="muted" for="notes">Observação</label>
+      <input id="notes" class="input" placeholder="Ex.: sem picles" />
+    </div>
+
+    <div class="row" style="margin-top:12px;">
+      <label class="muted" for="qty">Quantidade</label>
+      <input id="qty" class="input" type="number" min="1" value="1" style="max-width:90px;" />
+    </div>
+
+    <div class="checkout-summary" style="margin-top:14px;">
+      <span>Total estimado</span>
+      <strong id="dynamic-total">R$ 39,90</strong>
+    </div>
+
+    <button class="btn btn-primary btn-lg" style="width:100%; margin-top:12px;" onclick="showToast('Item adicionado ao carrinho')">
+      Adicionar ao carrinho
+    </button>
+  </aside>
+</section>
+
+<script>
+  (() => {
+    const base = Number(document.getElementById('base-price').dataset.base || 0);
+    const totalEl = document.getElementById('dynamic-total');
+    const qtyEl = document.getElementById('qty');
+    const sizeEl = document.getElementById('size-select');
+
+    const format = (n) => n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+    const recalc = () => {
+      const sizeExtra = Number(sizeEl.value || 0);
+      const optionsExtra = Array.from(document.querySelectorAll('input[data-extra]:checked'))
+        .reduce((acc, item) => acc + Number(item.dataset.extra || 0), 0);
+      const qty = Math.max(1, Number(qtyEl.value || 1));
+      const total = (base + sizeExtra + optionsExtra) * qty;
+      totalEl.textContent = format(total);
+    };
+
+    sizeEl.addEventListener('change', recalc);
+    qtyEl.addEventListener('input', recalc);
+    document.querySelectorAll('input[data-extra]').forEach((input) => input.addEventListener('change', recalc));
+    recalc();
+  })();
+</script>
 {% endblock %}
