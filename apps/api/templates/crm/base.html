@@ -4,73 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{% block title %}CRM | Menvi{% endblock %}</title>
-    <style>
-      :root {
-        --bg: #f6f8fb;
-        --surface: #ffffff;
-        --text: #1f2a37;
-        --muted: #70829a;
-        --border: #d9e1ec;
-        --primary: #2f6fed;
-        --success: #1fa46a;
-        --warning: #d89a1d;
-        --danger: #dd6363;
-      }
-      * { box-sizing: border-box; }
-      body { margin: 0; font-family: Inter, Arial, sans-serif; background: var(--bg); color: var(--text); }
-      .layout { display: grid; grid-template-columns: 220px 1fr; min-height: 100vh; }
-      .sidebar {
-        background: #fff; border-right: 1px solid var(--border); padding: 16px 12px;
-      }
-      .logo { font-weight: 800; color: #2ea66d; margin-bottom: 14px; font-size: 18px; }
-      .menu { display: grid; gap: 7px; }
-      .menu a {
-        text-decoration: none; font-size: 13px; font-weight: 700; color: #4d5d72;
-        border: 1px solid transparent; border-radius: 10px; padding: 8px 10px; background: #fff;
-      }
-      .menu a:hover, .menu a.active { border-color: #c8d8ff; background: #edf3ff; color: var(--primary); }
-      .content { padding: 16px; }
-      .topbar {
-        height: 52px; border: 1px solid var(--border); border-radius: 12px; background: #fff;
-        display: flex; align-items: center; justify-content: space-between; padding: 0 12px;
-      }
-      .topbar .title { font-size: 13px; color: var(--muted); font-weight: 700; }
-      .panel { margin-top: 12px; border: 1px solid var(--border); border-radius: 14px; background: var(--surface); padding: 14px; }
-      .page-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-      .page-head h2 { margin: 0; font-size: 28px; }
-      .page-head p { margin: 4px 0 0; font-size: 14px; color: var(--muted); }
-      .btn {
-        border: 1px solid var(--border); border-radius: 10px; background: #fff;
-        padding: 8px 10px; cursor: pointer; font-weight: 700; font-size: 12px; color: #566176;
-      }
-      .kpis { display: grid; grid-template-columns: repeat(3, minmax(150px, 1fr)); gap: 10px; margin: 10px 0; }
-      .kpi { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; }
-      .kpi span { color: var(--muted); font-size: 12px; }
-      .kpi strong { display: block; font-size: 24px; margin-top: 5px; }
-      .kpi.warning strong { color: var(--warning); }
-      .kpi.processing strong { color: var(--success); }
-      .filters { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 12px; }
-      .chip { border: 1px solid var(--border); border-radius: 8px; background: #fff; padding: 6px 10px; font-weight: 700; color: #748096; font-size: 12px; }
-      .chip.active { background: #dff5e9; color: #30a870; border-color: #caebdb; }
-      .card { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 12px; margin-top: 8px; }
-      .row { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-      .code { font-size: 12px; font-weight: 700; color: #8ea0b7; }
-      .badge { border-radius: 999px; padding: 3px 8px; font-size: 11px; font-weight: 700; }
-      .badge.pending { color: #b77c0f; background: #fff3dd; }
-      .badge.processing { color: #1b73d9; background: #e9f2ff; }
-      .badge.done { color: #0f7a4d; background: #e6f7ef; }
-      .order-items { margin-top: 8px; background: #f5f7fb; border-radius: 10px; padding: 9px; font-size: 13px; }
-      .actions { display: flex; gap: 7px; margin-top: 9px; }
-      .btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
-      .btn-danger { background: #fff; color: var(--danger); border-color: #f2c7c7; }
-      .table { width: 100%; border-collapse: collapse; font-size: 13px; }
-      .table th, .table td { text-align: left; padding: 8px; border-bottom: 1px solid var(--border); }
-      @media (max-width: 980px) {
-        .layout { grid-template-columns: 1fr; }
-        .sidebar { border-right: 0; border-bottom: 1px solid var(--border); }
-        .kpis { grid-template-columns: 1fr; }
-      }
-    </style>
+    <link rel="stylesheet" href="/static/css/crm.css" />
   </head>
   <body>
     <div class="layout">
@@ -94,20 +28,6 @@
         <div class="panel">{% block content %}{% endblock %}</div>
       </section>
     </div>
-
-    <script>
-      const p = location.pathname;
-      const map = {
-        '/crm/dashboard': 'dashboard',
-        '/crm/orders': 'orders',
-        '/crm/customers': 'customers',
-        '/crm/products': 'products',
-        '/crm/login': 'logout'
-      };
-      const active = map[p];
-      document.querySelectorAll('.menu a[data-nav]').forEach((a) => {
-        if (a.dataset.nav === active) a.classList.add('active');
-      });
-    </script>
+    <script src="/static/js/crm-base.js"></script>
   </body>
 </html>

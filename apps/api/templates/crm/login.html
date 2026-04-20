@@ -4,79 +4,27 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Login CRM | Menvi</title>
-    <style>
-      :root {
-        --bg: #f6f8fb;
-        --surface: #fff;
-        --text: #1f2a37;
-        --muted: #6f8098;
-        --border: #d9e1ec;
-        --primary: #2f6fed;
-      }
-      * { box-sizing: border-box; }
-      body { margin: 0; font-family: Inter, Arial, sans-serif; background: var(--bg); color: var(--text); }
-      .shell { max-width: 900px; margin: 30px auto; padding: 0 16px; }
-      .top { border: 1px solid var(--border); background: #fff; border-radius: 14px; padding: 14px; font-weight: 800; color: var(--primary); }
-      .panel { margin-top: 14px; border: 1px solid var(--border); background: #fff; border-radius: 16px; padding: 18px; }
-      h1 { margin: 0 0 8px; font-size: 32px; }
-      p { color: var(--muted); font-size: 14px; line-height: 1.5; }
-      .card { margin-top: 12px; border: 1px solid var(--border); border-radius: 12px; background: #fff; padding: 14px; max-width: 620px; }
-      .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
-      .input { width: 100%; border: 1px solid var(--border); border-radius: 10px; padding: 10px 11px; font-size: 14px; }
-      .btn {
-        margin-top: 10px; border: 1px solid #bfd0fb; border-radius: 10px; padding: 9px 14px;
-        background: var(--primary); color: #fff; font-size: 14px; font-weight: 700; cursor: pointer;
-      }
-      .toast {
-        position: fixed; right: 18px; bottom: 18px; background: #1f2a37; color: #fff;
-        border-radius: 10px; padding: 10px 12px; opacity: 0; transition: .2s;
-      }
-      .toast.show { opacity: 1; }
-      @media (max-width: 760px) { .row { grid-template-columns: 1fr; } }
-    </style>
+    <link rel="stylesheet" href="/static/css/crm.css" />
   </head>
   <body>
-    <div class="shell">
-      <div class="top">Menvi CRM</div>
-      <section class="panel">
+    <div class="crm-login-shell">
+      <div class="crm-login-top">Menvi CRM</div>
+      <section class="crm-login-panel">
         <h1>Login CRM</h1>
         <p>Acesso exclusivo para o restaurante gerenciar pedidos.</p>
 
-        <div class="card">
+        <div class="crm-login-card">
           <p>Credenciais de teste: <strong>admin@menvi.com</strong> / <strong>123456</strong>.</p>
-          <div class="row">
-            <input id="email" class="input" placeholder="E-mail" value="admin@menvi.com" />
-            <input id="password" class="input" type="password" placeholder="Senha" value="123456" />
+          <div class="crm-login-row">
+            <input id="email" class="crm-login-input" placeholder="E-mail" value="admin@menvi.com" />
+            <input id="password" class="crm-login-input" type="password" placeholder="Senha" value="123456" />
           </div>
-          <button id="loginBtn" class="btn">Entrar</button>
+          <button id="loginBtn" class="crm-login-btn">Entrar</button>
         </div>
       </section>
     </div>
 
     <div id="toast" class="toast">Autenticação simulada com sucesso</div>
-    <script>
-      document.getElementById('loginBtn').addEventListener('click', async () => {
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-
-        const response = await fetch('/auth/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password })
-        });
-
-        if (!response.ok) {
-          alert('Credenciais inválidas');
-          return;
-        }
-
-        const data = await response.json();
-        localStorage.setItem('menvi_token', data.access_token);
-
-        const toast = document.getElementById('toast');
-        toast.classList.add('show');
-        setTimeout(() => { window.location.href = '/crm/dashboard'; }, 500);
-      });
-    </script>
+    <script src="/static/js/crm-login.js"></script>
   </body>
 </html>

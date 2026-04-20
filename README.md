@@ -70,3 +70,18 @@ python -m apps.api.run
 - `GET /customers`
 
 As rotas de domínio usam JWT Bearer.
+
+
+## Front-end (templates + assets)
+
+A interface agora usa assets separados:
+
+- `apps/api/static/css/menu.css`
+- `apps/api/static/css/crm.css`
+- `apps/api/static/js/menu.js`
+- `apps/api/static/js/crm-base.js`
+- `apps/api/static/js/crm-login.js`
+- `apps/api/static/js/crm-dashboard.js`
+
+Esses arquivos são servidos por `/static/*` no FastAPI.
+

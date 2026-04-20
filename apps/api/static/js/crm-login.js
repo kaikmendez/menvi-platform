@@ -1,0 +1,27 @@
+(() => {
+  const loginBtn = document.getElementById('loginBtn');
+  if (!loginBtn) return;
+
+  loginBtn.addEventListener('click', async () => {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    const response = await fetch('/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+
+    if (!response.ok) {
+      alert('Credenciais inválidas');
+      return;
+    }
+
+    const data = await response.json();
+    localStorage.setItem('menvi_token', data.access_token);
+
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(() => { window.location.href = '/crm/dashboard'; }, 500);
+  });
+})();

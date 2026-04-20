@@ -2,6 +2,7 @@ from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
@@ -10,6 +11,7 @@ from .models import Customer, Order, OrderStatus
 from .routers import auth, categories, customers, orders, products, restaurants
 
 app = FastAPI(title='Menvi Platform API (Python)')
+app.mount('/static', StaticFiles(directory=str(Path(__file__).parent / 'static')), name='static')
 
 Base.metadata.create_all(bind=engine)
 
