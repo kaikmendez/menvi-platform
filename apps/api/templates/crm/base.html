@@ -6,80 +6,56 @@
     <title>{% block title %}CRM | Menvi{% endblock %}</title>
     <style>
       :root {
-        --bg: #f3f6fb;
-        --surface: #fff;
+        --bg: #f3f5f9;
+        --surface: #ffffff;
         --text: #1f2a37;
-        --muted: #62748e;
-        --primary: #2a64dd;
-        --primary-soft: #edf3ff;
-        --border: #d6e0ee;
-        --warning: #f59f00;
-        --processing: #2f80ed;
-        --done: #1f9d64;
+        --muted: #7a889d;
+        --border: #e4e8ef;
+        --primary: #2f6fed;
+        --success: #16a56b;
+        --warning: #d89a1d;
+        --danger: #dd6363;
       }
       * { box-sizing: border-box; }
       body { margin: 0; font-family: Inter, Arial, sans-serif; background: var(--bg); color: var(--text); }
-      .layout { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
-      .sidebar { background: #fff; border-right: 1px solid var(--border); padding: 20px 14px; }
-      .logo { font-weight: 800; color: var(--primary); margin-bottom: 18px; }
-      .menu { display: grid; gap: 8px; }
-      .menu a {
-        text-decoration: none; color: var(--text); border: 1px solid transparent;
-        border-radius: 10px; padding: 10px 12px; font-weight: 600; font-size: 14px;
+      .topbar {
+        height: 58px; border-bottom: 1px solid var(--border); background: #fff;
+        display: flex; align-items: center; justify-content: center; position: sticky; top: 0; z-index: 10;
       }
-      .menu a:hover, .menu a.active { background: var(--primary-soft); border-color: #c8d8ff; color: var(--primary); }
-      .content { padding: 20px; }
-      .panel { border: 1px solid var(--border); border-radius: 14px; background: var(--surface); padding: 20px; }
-      h1, h2, h3 { margin: 0 0 10px; }
-      p { color: var(--muted); line-height: 1.5; }
-      .kpis { display:grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap: 12px; margin-top: 12px; }
-      .kpi { border: 1px solid var(--border); border-radius: 12px; padding: 14px; }
-      .kpi strong { display:block; margin-top: 8px; font-size: 26px; }
-      .kpi.pending strong { color: var(--warning); }
-      .kpi.processing strong { color: var(--processing); }
-      .kpi.done strong { color: var(--done); }
-      .table { width:100%; border-collapse: collapse; }
-      .table th, .table td { text-align:left; padding:10px; border-bottom:1px solid var(--border); }
-      .badge { padding: 4px 8px; border-radius: 999px; font-size: 12px; font-weight: 700; }
-      .badge.pending { color: #a86400; background: #fff3da; }
-      .badge.processing { color: #1059c9; background: #eaf2ff; }
-      .badge.done { color: #0f7a4d; background: #e6f7ef; }
-      @media (max-width: 900px) {
-        .layout { grid-template-columns: 1fr; }
-        .sidebar { border-right: 0; border-bottom: 1px solid var(--border); }
+      .brand { font-weight: 800; color: #2ea66d; }
+      .content { max-width: 1120px; margin: 18px auto; padding: 0 14px 24px; }
+      .page-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+      .page-head h2 { margin: 0; font-size: 38px; }
+      .btn {
+        border: 1px solid var(--border); border-radius: 12px; background: #fff;
+        padding: 10px 14px; cursor: pointer; font-weight: 700; color: #566176;
+      }
+      .kpis { display: grid; grid-template-columns: repeat(3, minmax(180px, 1fr)); gap: 12px; margin: 12px 0; }
+      .kpi { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 12px 14px; }
+      .kpi span { color: var(--muted); font-size: 14px; }
+      .kpi strong { display: block; font-size: 34px; margin-top: 6px; }
+      .kpi.warning strong { color: var(--warning); }
+      .kpi.processing strong { color: var(--success); }
+      .filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 14px; }
+      .chip { border: 1px solid var(--border); border-radius: 10px; background: #fff; padding: 7px 12px; font-weight: 700; color: #748096; font-size: 13px; }
+      .chip.active { background: #dff5e9; color: #30a870; border-color: #caebdb; }
+      .card { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 14px; margin-top: 10px; }
+      .row { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+      .code { font-weight: 700; color: #8ea0b7; }
+      .badge { border-radius: 999px; padding: 4px 10px; font-size: 12px; font-weight: 700; }
+      .badge.pending { color: #b77c0f; background: #fff3dd; }
+      .order-items { margin-top: 10px; background: #f5f7fb; border-radius: 12px; padding: 10px; }
+      .actions { display: flex; gap: 8px; margin-top: 10px; }
+      .btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+      .btn-danger { background: #fff; color: var(--danger); border-color: #f2c7c7; }
+      @media (max-width: 860px) {
+        .kpis { grid-template-columns: 1fr; }
+        .page-head h2 { font-size: 30px; }
       }
     </style>
   </head>
   <body>
-    <div class="layout">
-      <aside class="sidebar">
-        <div class="logo">Menvi CRM</div>
-        <nav class="menu">
-          <a href="/crm/dashboard" data-nav="dashboard">Dashboard</a>
-          <a href="/crm/orders" data-nav="orders">Pedidos</a>
-          <a href="/crm/customers" data-nav="customers">Clientes</a>
-          <a href="/crm/products" data-nav="products">Produtos</a>
-          <a href="/crm/login" data-nav="logout">Sair</a>
-        </nav>
-      </aside>
-      <section class="content">
-        <div class="panel">{% block content %}{% endblock %}</div>
-      </section>
-    </div>
-
-    <script>
-      const p = location.pathname;
-      const map = {
-        '/crm/dashboard': 'dashboard',
-        '/crm/orders': 'orders',
-        '/crm/customers': 'customers',
-        '/crm/products': 'products',
-        '/crm/login': 'logout'
-      };
-      const nav = map[p];
-      document.querySelectorAll('.menu a[data-nav]').forEach((a) => {
-        if (a.dataset.nav === nav) a.classList.add('active');
-      });
-    </script>
+    <header class="topbar"><div class="brand">⚡ WPP AI</div></header>
+    <main class="content">{% block content %}{% endblock %}</main>
   </body>
 </html>

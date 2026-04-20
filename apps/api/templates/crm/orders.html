@@ -2,14 +2,13 @@
 {% block title %}Pedidos | CRM{% endblock %}
 {% block content %}
 <h2>Pedidos</h2>
-<p>Controle da fila por status.</p>
-
+<p>Visualização detalhada da fila de pedidos.</p>
 <table class="table">
   <thead><tr><th>#</th><th>Cliente</th><th>Status</th><th>Total</th></tr></thead>
   <tbody>
-    <tr><td>1001</td><td>João</td><td><span class="badge pending">PENDENTE</span></td><td>R$ 63,90</td></tr>
-    <tr><td>1002</td><td>Maria</td><td><span class="badge processing">EM ANDAMENTO</span></td><td>R$ 82,40</td></tr>
-    <tr><td>1003</td><td>Ana</td><td><span class="badge done">ENTREGUE</span></td><td>R$ 45,00</td></tr>
+    <tr><td>1001</td><td>João</td><td><span class="badge pending">Pendente</span></td><td>R$ 63,90</td></tr>
+    <tr><td>1002</td><td>Maria</td><td><span class="badge processing">Em andamento</span></td><td>R$ 82,40</td></tr>
+    <tr><td>1003</td><td>Ana</td><td><span class="badge done">Entregue</span></td><td>R$ 45,00</td></tr>
   </tbody>
 </table>
 {% endblock %}

@@ -1,21 +1,48 @@
 {% extends 'crm/base.html' %}
-{% block title %}Dashboard CRM | Menvi{% endblock %}
+{% block title %}Pedidos | CRM{% endblock %}
 {% block content %}
-<h2>Painel de Pedidos</h2>
-<p>Resumo operacional para priorizar atendimento.</p>
+<div class="page-head">
+  <div>
+    <h2>Pedidos</h2>
+    <p>Gerencie os pedidos do seu restaurante</p>
+  </div>
+  <button class="btn">⟳ Atualizar</button>
+</div>
 
 <div class="kpis">
-  <div class="kpi pending">
-    <span>Pendentes de atendimento</span>
-    <strong>08</strong>
+  <div class="kpi"><span>Total hoje</span><strong>1</strong></div>
+  <div class="kpi warning"><span>Pendentes</span><strong>1</strong></div>
+  <div class="kpi processing"><span>Em andamento</span><strong>1</strong></div>
+</div>
+
+<div class="filters">
+  <span class="chip active">Todos</span>
+  <span class="chip">Pendente</span>
+  <span class="chip">Confirmado</span>
+  <span class="chip">Preparando</span>
+  <span class="chip">Pronto</span>
+  <span class="chip">Entregue</span>
+  <span class="chip">Cancelado</span>
+</div>
+
+<div class="card">
+  <div class="row">
+    <div>
+      <div class="code"># cf7937fd</div>
+      <div style="margin-top:4px;"><span class="badge pending">Pendente</span></div>
+      <p style="margin-top:8px;">📞 +5511930105237</p>
+    </div>
+    <strong>R$ 67,00</strong>
   </div>
-  <div class="kpi processing">
-    <span>Em andamento</span>
-    <strong>14</strong>
+
+  <div class="order-items">
+    <div class="row"><strong>2x Temaki California</strong><strong>R$ 58,00</strong></div>
+    <div class="row" style="margin-top:8px;"><strong>1x Agua Mineral Com Gas</strong><strong>R$ 9,00</strong></div>
   </div>
-  <div class="kpi done">
-    <span>Entregues hoje</span>
-    <strong>36</strong>
+
+  <div class="actions">
+    <button class="btn btn-primary">Confirmar →</button>
+    <button class="btn btn-danger">Cancelar →</button>
   </div>
 </div>
 {% endblock %}
