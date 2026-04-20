@@ -1,7 +1,7 @@
 // Tipos compartilhados entre menu-web e crm-web.
-// Espelham os schemas Pydantic de apps/api. Em fases seguintes trocaremos
-// este arquivo por geração automática via openapi-typescript a partir de
-// apps/api/openapi.json.
+// Espelham os schemas Pydantic de apps/api (ver apps/api/domain/**/schemas.py e
+// apps/api/public/router.py). Em fases seguintes trocaremos este arquivo por geração
+// automática via openapi-typescript a partir de apps/api/openapi.json.
 
 export type UserRole = 'OWNER' | 'MANAGER' | 'ATTENDANT';
 
@@ -19,27 +19,7 @@ export type SubscriptionPlan = 'STARTER' | 'PRO' | 'ENTERPRISE';
 
 export type SubscriptionStatus = 'TRIALING' | 'ACTIVE' | 'PAST_DUE' | 'CANCELED';
 
-export interface RestaurantSettings {
-  delivery_fee: string;
-  min_order_amount: string;
-  accepts_pix: boolean;
-  accepts_card: boolean;
-  accepts_cash: boolean;
-  opening_hours: string | null;
-}
-
-export interface Restaurant {
-  id: string;
-  slug: string;
-  name: string;
-  description: string | null;
-  whatsapp_phone: string | null;
-  logo_url: string | null;
-  cover_url: string | null;
-  is_open: boolean;
-  settings: RestaurantSettings;
-}
-
+/** ProductOption — adicional do produto. `price_delta` é string decimal. */
 export interface ProductOption {
   id: string;
   name: string;
@@ -60,20 +40,32 @@ export interface Product {
   options: ProductOption[];
 }
 
-export interface Category {
+export interface PublicCategory {
   id: string;
   name: string;
   position: number;
-  is_active: boolean;
   products: Product[];
 }
 
+/** Resposta achatada de `GET /public/menu/{slug}`. */
 export interface PublicMenu {
-  restaurant: Restaurant;
-  categories: Category[];
+  restaurant_id: string;
+  slug: string;
+  name: string;
+  description: string | null;
+  logo_url: string | null;
+  cover_url: string | null;
+  is_open: boolean;
+  delivery_fee: string;
+  min_order_amount: string;
+  accepts_pix: boolean;
+  accepts_card: boolean;
+  accepts_cash: boolean;
+  categories: PublicCategory[];
 }
 
 export interface OrderItemOption {
+  id: string;
   product_option_id: string;
   name: string;
   price_delta: string;
@@ -90,32 +82,52 @@ export interface OrderItem {
   options: OrderItemOption[];
 }
 
+export interface OrderCustomerMini {
+  id: string;
+  name: string;
+  phone: string;
+}
+
+export interface OrderEvent {
+  id: string;
+  from_status: OrderStatus | null;
+  to_status: OrderStatus;
+  actor_user_id: string | null;
+  note: string | null;
+  created_at: string;
+}
+
 export interface Order {
   id: string;
   code: number;
+  restaurant_id: string;
+  customer: OrderCustomerMini;
   status: OrderStatus;
   payment_method: PaymentMethod;
   subtotal: string;
   delivery_fee: string;
   total: string;
   notes: string | null;
-  customer_name: string;
-  customer_phone: string;
-  customer_address: string | null;
   items: OrderItem[];
+  events: OrderEvent[];
   created_at: string;
   updated_at: string;
 }
 
-export interface OrderCreateItemOption {
-  product_option_id: string;
+/** Visão pública reduzida (`GET /public/orders/{id}`). */
+export interface PublicOrder {
+  id: string;
+  code: number;
+  status: OrderStatus;
+  total: string;
+  created_at: string;
 }
 
 export interface OrderCreateItem {
   product_id: string;
   quantity: number;
   notes?: string | null;
-  options?: OrderCreateItemOption[];
+  option_ids?: string[];
 }
 
 export interface OrderCreatePayload {

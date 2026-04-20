@@ -54,7 +54,7 @@ export default function PainelPage() {
                   </Badge>
                 </CardHeader>
                 <CardContent className="space-y-1 text-sm">
-                  <p className="font-medium">{o.customer_name}</p>
+                  <p className="font-medium">{o.customer.name}</p>
                   <p className="text-muted-foreground">{o.items.length} itens</p>
                   <p className="text-base font-semibold">{formatBRL(o.total)}</p>
                 </CardContent>

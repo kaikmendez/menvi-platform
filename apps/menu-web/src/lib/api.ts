@@ -1,4 +1,4 @@
-import type { PublicMenu, Order, OrderCreatePayload } from '@menvi/types';
+import type { PublicMenu, Order, OrderCreatePayload, PublicOrder } from '@menvi/types';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000';
 
@@ -33,6 +33,6 @@ export async function createOrder(slug: string, payload: OrderCreatePayload): Pr
   return apiPost<Order>(`/public/restaurants/${slug}/orders`, payload);
 }
 
-export async function getOrder(orderId: string): Promise<Order> {
-  return apiGet<Order>(`/public/orders/${orderId}`, { cache: 'no-store' });
+export async function getPublicOrder(orderId: string): Promise<PublicOrder> {
+  return apiGet<PublicOrder>(`/public/orders/${orderId}`, { cache: 'no-store' });
 }
