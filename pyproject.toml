@@ -1,0 +1,75 @@
+[project]
+name = "menvi-platform"
+version = "0.1.0"
+description = "Menvi — plataforma SaaS para restaurantes parceiros (M2 Solutions)."
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [{ name = "M2 Solutions" }]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+extend-exclude = [".venv", "build", "dist", "apps/api/static", "apps/api/templates"]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # bugbear
+    "UP",  # pyupgrade
+    "SIM", # simplify
+    "C4",  # comprehensions
+    "PL",  # pylint
+    "RUF", # ruff-specific
+]
+ignore = [
+    "E501",    # line length handled by formatter
+    "PLR0913", # too many arguments — common in FastAPI handlers
+    "PLR2004", # magic numbers acceptable in schemas
+    "B008",    # FastAPI uses `Depends()` as default argument
+]
+
+[tool.ruff.lint.per-file-ignores]
+"alembic/versions/*.py" = ["E", "W", "F", "I", "UP"]
+"apps/api/seed.py" = ["PLR0915"]
+
+[tool.ruff.format]
+quote-style = "single"
+
+[tool.black]
+line-length = 120
+target-version = ["py311"]
+skip-string-normalization = true
+extend-exclude = '''
+/(
+    \.venv
+  | build
+  | dist
+  | apps/api/static
+  | apps/api/templates
+  | alembic/versions
+)/
+'''
+
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+disallow_untyped_defs = false
+check_untyped_defs = true
+plugins = ["pydantic.mypy"]
+exclude = [
+    "^\\.venv",
+    "^alembic/versions",
+]
+
+[[tool.mypy.overrides]]
+module = ["jose.*", "passlib.*", "sqlalchemy.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+addopts = "-ra -q"
+testpaths = ["tests"]

@@ -34,23 +34,62 @@ docker-compose.yml
 docker compose up -d
 ```
 
-2. Criar venv e instalar libs:
+2. Criar venv e instalar libs (usar `requirements-dev.txt` para desenvolvimento):
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt
+pip install -r requirements-dev.txt
+pre-commit install
 ```
 
-> Se aparecer erro de `email_validator`, rode novamente `pip install -r requirements.txt`.
+> Se aparecer erro de `email_validator`, rode novamente `pip install -r requirements-dev.txt`.
 
 3. Configurar env:
 ```bash
 cp .env.example .env
 ```
 
-4. Rodar API:
+4. Aplicar migrations:
+```bash
+alembic upgrade head
+```
+
+5. Popular dados demo (opcional, mas recomendado para testar o fluxo):
+```bash
+python -m apps.api.seed
+# ou para recriar do zero:
+python -m apps.api.seed --force
+```
+
+6. Rodar API:
 ```bash
 python -m apps.api.run
+```
+
+## Qualidade de código
+
+Checks rodam localmente antes do commit (via pre-commit) e no CI:
+
+```bash
+ruff check .          # lint
+ruff format --check . # formatação (ruff)
+black --check .       # formatação (black)
+mypy apps/api         # typecheck
+```
+
+## Migrations (Alembic)
+
+O schema do banco é gerenciado pelo Alembic — **não** usamos mais `Base.metadata.create_all` no boot.
+
+```bash
+# aplicar todas as migrations
+alembic upgrade head
+
+# gerar uma nova migration a partir das mudanças nos modelos
+alembic revision --autogenerate -m "minha mudanca"
+
+# voltar uma versão
+alembic downgrade -1
 ```
 
 ## URLs
@@ -80,7 +119,6 @@ python -m apps.api.run
 - `POST /public/orders`
 
 ### Autenticadas (CRM)
-- `POST /auth/seed-admin`
 - `POST /auth/login`
 - `GET /orders`
 - `GET /orders/{order_id}`

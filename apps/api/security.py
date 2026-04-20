@@ -1,11 +1,10 @@
 import hashlib
 import secrets
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 from jose import jwt
 
 from .config import settings
-
 
 PBKDF2_PREFIX = 'pbkdf2_sha256'
 PBKDF2_ITERATIONS = 390000
@@ -20,7 +19,9 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     if hashed_password.startswith(f'{PBKDF2_PREFIX}$'):
         try:
             _, iterations, salt, expected = hashed_password.split('$', 3)
-            computed = hashlib.pbkdf2_hmac('sha256', plain_password.encode('utf-8'), salt.encode('utf-8'), int(iterations)).hex()
+            computed = hashlib.pbkdf2_hmac(
+                'sha256', plain_password.encode('utf-8'), salt.encode('utf-8'), int(iterations)
+            ).hex()
             return secrets.compare_digest(computed, expected)
         except Exception:
             return False
@@ -42,10 +43,7 @@ def hash_password(password: str) -> str:
 
 
 def create_access_token(subject: str, extra: dict | None = None) -> str:
-    payload = {
-        'sub': subject,
-        'exp': datetime.now(timezone.utc) + timedelta(minutes=settings.jwt_expires_minutes)
-    }
+    payload = {'sub': subject, 'exp': datetime.now(UTC) + timedelta(minutes=settings.jwt_expires_minutes)}
     if extra:
         payload.update(extra)
     return jwt.encode(payload, settings.jwt_secret, algorithm=settings.jwt_algorithm)

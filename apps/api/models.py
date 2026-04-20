@@ -1,10 +1,15 @@
 import enum
-from datetime import datetime
+from datetime import UTC, datetime
 
 from sqlalchemy import Boolean, DateTime, Enum, ForeignKey, Integer, Numeric, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .db import Base
+
+
+def _now() -> datetime:
+    """UTC agora (substitui `datetime.utcnow`, deprecado em Python 3.12+)."""
+    return datetime.now(UTC)
 
 
 class UserRole(str, enum.Enum):
@@ -36,7 +41,7 @@ class Restaurant(Base):
     name: Mapped[str] = mapped_column(String(120), nullable=False)
     slug: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
     phone: Mapped[str | None] = mapped_column(String(20), nullable=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=_now)
 
     users: Mapped[list['User']] = relationship(back_populates='restaurant', cascade='all, delete-orphan')
     categories: Mapped[list['Category']] = relationship(back_populates='restaurant', cascade='all, delete-orphan')
@@ -65,7 +70,7 @@ class Customer(Base):
     restaurant_id: Mapped[str] = mapped_column(ForeignKey('restaurants.id', ondelete='CASCADE'))
     name: Mapped[str] = mapped_column(String(120), nullable=False)
     phone: Mapped[str] = mapped_column(String(20), nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=_now)
 
     restaurant: Mapped['Restaurant'] = relationship(back_populates='customers')
     orders: Mapped[list['Order']] = relationship(back_populates='customer')
@@ -122,7 +127,7 @@ class Order(Base):
     status: Mapped[OrderStatus] = mapped_column(Enum(OrderStatus), default=OrderStatus.PENDING)
     total_amount: Mapped[float] = mapped_column(Numeric(10, 2), nullable=False)
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=_now)
 
     restaurant: Mapped['Restaurant'] = relationship(back_populates='orders')
     customer: Mapped['Customer'] = relationship(back_populates='orders')

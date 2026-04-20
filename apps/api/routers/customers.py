@@ -1,31 +1,40 @@
+from __future__ import annotations
+
+from datetime import datetime
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import and_
 from sqlalchemy.orm import Session, joinedload
 
 from ..db import get_db
-from ..deps import get_current_user
+from ..deps import CurrentUser, get_current_user
 from ..models import Customer, Order, OrderItem, OrderItemOption
 
 router = APIRouter(prefix='/customers', tags=['customers'])
 
 
 @router.get('')
-def list_items(_: dict = Depends(get_current_user), db: Session = Depends(get_db)):
-    restaurant_id = _.get('restaurant_id')
-
+def list_items(
+    current_user: CurrentUser = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict:
     customers = (
         db.query(Customer)
         .options(joinedload(Customer.orders))
-        .filter(Customer.restaurant_id == restaurant_id)
+        .filter(Customer.restaurant_id == current_user.restaurant_id)
         .all()
     )
 
-    data = []
+    data: list[dict] = []
     for customer in customers:
-        orders = sorted(customer.orders, key=lambda order: order.created_at or 0, reverse=True)
+        orders = sorted(
+            customer.orders,
+            key=lambda order: order.created_at or datetime.min,
+            reverse=True,
+        )
         orders_count = len(orders)
         total_spent = round(sum(float(order.total_amount) for order in orders), 2)
-        avg_ticket = round(total_spent / orders_count, 2) if orders_count else 0
+        avg_ticket = round(total_spent / orders_count, 2) if orders_count else 0.0
         last_order = orders[0].created_at if orders else None
 
         data.append(
@@ -40,17 +49,19 @@ def list_items(_: dict = Depends(get_current_user), db: Session = Depends(get_db
             }
         )
 
-    data.sort(key=lambda item: item['orders_count'], reverse=True)
+    data.sort(key=lambda item: int(item['orders_count']), reverse=True)
     return {'data': data}
 
 
 @router.get('/{customer_id}/orders')
-def customer_orders(customer_id: str, _: dict = Depends(get_current_user), db: Session = Depends(get_db)):
-    restaurant_id = _.get('restaurant_id')
-
+def customer_orders(
+    customer_id: str,
+    current_user: CurrentUser = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict:
     customer = (
         db.query(Customer)
-        .filter(and_(Customer.id == customer_id, Customer.restaurant_id == restaurant_id))
+        .filter(and_(Customer.id == customer_id, Customer.restaurant_id == current_user.restaurant_id))
         .first()
     )
     if not customer:
@@ -62,7 +73,7 @@ def customer_orders(customer_id: str, _: dict = Depends(get_current_user), db: S
             joinedload(Order.items).joinedload(OrderItem.product),
             joinedload(Order.items).joinedload(OrderItem.options).joinedload(OrderItemOption.product_option),
         )
-        .filter(and_(Order.customer_id == customer_id, Order.restaurant_id == restaurant_id))
+        .filter(and_(Order.customer_id == customer_id, Order.restaurant_id == current_user.restaurant_id))
         .order_by(Order.created_at.desc())
         .all()
     )

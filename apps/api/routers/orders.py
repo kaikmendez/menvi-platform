@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import uuid
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -5,8 +7,17 @@ from sqlalchemy import and_
 from sqlalchemy.orm import Session, joinedload
 
 from ..db import get_db
-from ..deps import get_current_user
-from ..models import Customer, Order, OrderItem, OrderItemOption, OrderStatus, Product, ProductOption, Restaurant
+from ..deps import CurrentUser, get_current_user
+from ..models import (
+    Customer,
+    Order,
+    OrderItem,
+    OrderItemOption,
+    OrderStatus,
+    Product,
+    ProductOption,
+    Restaurant,
+)
 from ..schemas import CreateOrderIn, OrderOut, UpdateOrderStatusIn
 
 router = APIRouter(tags=['orders'])
@@ -46,7 +57,7 @@ def _build_order_payload(order: Order) -> dict:
 
 
 @router.post('/public/orders', response_model=OrderOut)
-def create_order(payload: CreateOrderIn, db: Session = Depends(get_db)):
+def create_order(payload: CreateOrderIn, db: Session = Depends(get_db)) -> dict:
     restaurant = db.query(Restaurant).filter(Restaurant.slug == payload.restaurant_slug).first()
     if not restaurant:
         raise HTTPException(status_code=404, detail='Restaurante não encontrado')
@@ -85,18 +96,18 @@ def create_order(payload: CreateOrderIn, db: Session = Depends(get_db)):
         if not product:
             raise HTTPException(status_code=400, detail=f'Produto inválido: {input_item.product_id}')
 
-        product_options = (
-            db.query(ProductOption)
-            .filter(
-                and_(
-                    ProductOption.product_id == product.id,
-                    ProductOption.id.in_(input_item.option_ids if input_item.option_ids else ['-']),
+        product_options: list[ProductOption] = []
+        if input_item.option_ids:
+            product_options = (
+                db.query(ProductOption)
+                .filter(
+                    and_(
+                        ProductOption.product_id == product.id,
+                        ProductOption.id.in_(input_item.option_ids),
+                    )
                 )
+                .all()
             )
-            .all()
-            if input_item.option_ids
-            else []
-        )
 
         selected_ids = {opt.id for opt in product_options}
         invalid = [option_id for option_id in input_item.option_ids if option_id not in selected_ids]
@@ -132,15 +143,11 @@ def create_order(payload: CreateOrderIn, db: Session = Depends(get_db)):
     )
     db.add(order)
 
-    for item, input_item in zip(created_items, payload.items):
+    for item, input_item in zip(created_items, payload.items, strict=True):
         item.order_id = order.id
         db.add(item)
         if input_item.option_ids:
-            options = (
-                db.query(ProductOption)
-                .filter(ProductOption.id.in_(input_item.option_ids))
-                .all()
-            )
+            options = db.query(ProductOption).filter(ProductOption.id.in_(input_item.option_ids)).all()
             for option in options:
                 db.add(
                     OrderItemOption(
@@ -162,14 +169,18 @@ def create_order(payload: CreateOrderIn, db: Session = Depends(get_db)):
         .filter(Order.id == order.id)
         .first()
     )
+    if order_db is None:
+        raise HTTPException(status_code=500, detail='Falha ao recuperar o pedido criado')
 
     return _build_order_payload(order_db)
 
 
 @router.get('/orders')
-def list_orders(status: str | None = None, _: dict = Depends(get_current_user), db: Session = Depends(get_db)):
-    restaurant_id = _.get('restaurant_id')
-
+def list_orders(
+    status: str | None = None,
+    current_user: CurrentUser = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict:
     query = (
         db.query(Order)
         .options(
@@ -177,21 +188,24 @@ def list_orders(status: str | None = None, _: dict = Depends(get_current_user), 
             joinedload(Order.items).joinedload(OrderItem.product),
             joinedload(Order.items).joinedload(OrderItem.options).joinedload(OrderItemOption.product_option),
         )
-        .filter(Order.restaurant_id == restaurant_id)
+        .filter(Order.restaurant_id == current_user.restaurant_id)
     )
     if status:
         try:
             query = query.filter(Order.status == OrderStatus(status.upper()))
-        except ValueError:
-            raise HTTPException(status_code=400, detail='Status inválido')
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail='Status inválido') from exc
 
     orders = query.order_by(Order.created_at.desc()).all()
     return {'data': [_build_order_payload(order) for order in orders]}
 
 
 @router.get('/orders/{order_id}', response_model=OrderOut)
-def get_order(order_id: str, _: dict = Depends(get_current_user), db: Session = Depends(get_db)):
-    restaurant_id = _.get('restaurant_id')
+def get_order(
+    order_id: str,
+    current_user: CurrentUser = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict:
     order = (
         db.query(Order)
         .options(
@@ -199,7 +213,7 @@ def get_order(order_id: str, _: dict = Depends(get_current_user), db: Session = 
             joinedload(Order.items).joinedload(OrderItem.product),
             joinedload(Order.items).joinedload(OrderItem.options).joinedload(OrderItemOption.product_option),
         )
-        .filter(and_(Order.id == order_id, Order.restaurant_id == restaurant_id))
+        .filter(and_(Order.id == order_id, Order.restaurant_id == current_user.restaurant_id))
         .first()
     )
     if not order:
@@ -209,16 +223,21 @@ def get_order(order_id: str, _: dict = Depends(get_current_user), db: Session = 
 
 
 @router.patch('/orders/{order_id}/status')
-def update_status(order_id: str, payload: UpdateOrderStatusIn, _: dict = Depends(get_current_user), db: Session = Depends(get_db)):
-    restaurant_id = _.get('restaurant_id')
-
+def update_status(
+    order_id: str,
+    payload: UpdateOrderStatusIn,
+    current_user: CurrentUser = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict:
     status_value = payload.status.upper()
     try:
         new_status = OrderStatus(status_value)
-    except ValueError:
-        raise HTTPException(status_code=400, detail='Status inválido')
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail='Status inválido') from exc
 
-    order = db.query(Order).filter(and_(Order.id == order_id, Order.restaurant_id == restaurant_id)).first()
+    order = (
+        db.query(Order).filter(and_(Order.id == order_id, Order.restaurant_id == current_user.restaurant_id)).first()
+    )
     if not order:
         raise HTTPException(status_code=404, detail='Pedido não encontrado')
 
