@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from ..db import get_db
-from ..models import User
+from ..models import Category, Customer, Order, OrderStatus, Product, Restaurant, User, UserRole
 from ..schemas import LoginIn, TokenOut
 from ..security import create_access_token, hash_password, verify_password
 
@@ -27,8 +27,6 @@ def seed_admin(db: Session = Depends(get_db)):
     if existing:
         return {'message': 'Admin já existe'}
 
-    from ..models import Restaurant, UserRole
-
     restaurant = Restaurant(id=str(uuid.uuid4()), name='Restaurante Demo', slug='restaurante-demo')
     user = User(
         id=str(uuid.uuid4()),
@@ -38,7 +36,27 @@ def seed_admin(db: Session = Depends(get_db)):
         password_hash=hash_password('123456'),
         role=UserRole.OWNER
     )
-    db.add(restaurant)
-    db.add(user)
+
+    category = Category(id=str(uuid.uuid4()), restaurant_id=restaurant.id, name='Destaques', sort_order=1)
+    product = Product(
+        id=str(uuid.uuid4()),
+        restaurant_id=restaurant.id,
+        category_id=category.id,
+        name='Combo Executivo',
+        description='Prato + bebida',
+        price=67.00,
+        is_active=True
+    )
+    customer = Customer(id=str(uuid.uuid4()), restaurant_id=restaurant.id, name='Cliente Teste', phone='+5511930105237')
+    order = Order(
+        id=str(uuid.uuid4()),
+        restaurant_id=restaurant.id,
+        customer_id=customer.id,
+        status=OrderStatus.PENDING,
+        total_amount=67.00,
+        notes='2x Temaki California, 1x Agua Mineral Com Gas'
+    )
+
+    db.add_all([restaurant, user, category, product, customer, order])
     db.commit()
-    return {'message': 'Admin criado', 'email': 'admin@menvi.com', 'password': '123456'}
+    return {'message': 'Admin e dados iniciais criados', 'email': 'admin@menvi.com', 'password': '123456'}

@@ -6,43 +6,114 @@
     <h2>Pedidos</h2>
     <p>Gerencie os pedidos do seu restaurante</p>
   </div>
-  <button class="btn">⟳ Atualizar</button>
+  <button class="btn" onclick="window.location.reload()">⟳ Atualizar</button>
 </div>
 
 <div class="kpis">
-  <div class="kpi"><span>Total hoje</span><strong>1</strong></div>
-  <div class="kpi warning"><span>Pendentes</span><strong>1</strong></div>
-  <div class="kpi processing"><span>Em andamento</span><strong>1</strong></div>
+  <div class="kpi"><span>Total hoje</span><strong id="kpi-total">{{ counts.total }}</strong></div>
+  <div class="kpi warning"><span>Pendentes</span><strong id="kpi-pending">{{ counts.pending }}</strong></div>
+  <div class="kpi processing"><span>Em andamento</span><strong id="kpi-processing">{{ counts.processing }}</strong></div>
 </div>
 
 <div class="filters">
-  <span class="chip active">Todos</span>
-  <span class="chip">Pendente</span>
-  <span class="chip">Confirmado</span>
-  <span class="chip">Preparando</span>
-  <span class="chip">Pronto</span>
-  <span class="chip">Entregue</span>
-  <span class="chip">Cancelado</span>
+  <button class="chip active" data-filter="ALL">Todos</button>
+  <button class="chip" data-filter="PENDING">Pendente</button>
+  <button class="chip" data-filter="CONFIRMED">Confirmado</button>
+  <button class="chip" data-filter="PREPARING">Preparando</button>
+  <button class="chip" data-filter="READY">Pronto</button>
+  <button class="chip" data-filter="DELIVERED">Entregue</button>
+  <button class="chip" data-filter="CANCELLED">Cancelado</button>
 </div>
 
-<div class="card">
-  <div class="row">
-    <div>
-      <div class="code"># cf7937fd</div>
-      <div style="margin-top:4px;"><span class="badge pending">Pendente</span></div>
-      <p style="margin-top:8px;">📞 +5511930105237</p>
+<div id="orders-list">
+  {% for order in orders %}
+  <div class="card order-card" data-status="{{ order.status }}" data-order-id="{{ order.id }}">
+    <div class="row">
+      <div>
+        <div class="code"># {{ order.code }}</div>
+        <div style="margin-top:4px;"><span class="badge pending status-label">{{ order.status }}</span></div>
+        <p style="margin-top:8px;">👤 {{ order.customer_name }} · 📞 {{ order.customer_phone }}</p>
+      </div>
+      <strong>R$ {{ '%.2f'|format(order.total_amount) }}</strong>
     </div>
-    <strong>R$ 67,00</strong>
-  </div>
 
-  <div class="order-items">
-    <div class="row"><strong>2x Temaki California</strong><strong>R$ 58,00</strong></div>
-    <div class="row" style="margin-top:8px;"><strong>1x Agua Mineral Com Gas</strong><strong>R$ 9,00</strong></div>
-  </div>
+    <div class="order-items">
+      <div class="row"><strong>{{ order.notes or 'Sem observações do pedido.' }}</strong></div>
+    </div>
 
-  <div class="actions">
-    <button class="btn btn-primary">Confirmar →</button>
-    <button class="btn btn-danger">Cancelar →</button>
+    <div class="actions">
+      <button class="btn btn-primary action-status" data-status="CONFIRMED">Confirmar</button>
+      <button class="btn btn-primary action-status" data-status="PREPARING">Preparar</button>
+      <button class="btn btn-primary action-status" data-status="DELIVERED">Entregue</button>
+      <button class="btn btn-danger action-status" data-status="CANCELLED">Cancelar</button>
+    </div>
   </div>
+  {% endfor %}
 </div>
+
+<script>
+  const token = localStorage.getItem('menvi_token');
+
+  const statusStyles = {
+    PENDING: ['pending', 'Pendente'],
+    CONFIRMED: ['processing', 'Confirmado'],
+    PREPARING: ['processing', 'Preparando'],
+    READY: ['processing', 'Pronto'],
+    DELIVERED: ['done', 'Entregue'],
+    CANCELLED: ['pending', 'Cancelado']
+  };
+
+  const applyFilter = (status) => {
+    document.querySelectorAll('.order-card').forEach((card) => {
+      card.style.display = (status === 'ALL' || card.dataset.status === status) ? 'block' : 'none';
+    });
+  };
+
+  document.querySelectorAll('.chip').forEach((chip) => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('.chip').forEach((c) => c.classList.remove('active'));
+      chip.classList.add('active');
+      applyFilter(chip.dataset.filter);
+    });
+  });
+
+  const updateCardStatus = (card, status) => {
+    card.dataset.status = status;
+    const [className, label] = statusStyles[status] || ['pending', status];
+    const badge = card.querySelector('.status-label');
+    badge.className = `badge ${className} status-label`;
+    badge.textContent = label;
+  };
+
+  document.querySelectorAll('.action-status').forEach((button) => {
+    button.addEventListener('click', async () => {
+      const card = button.closest('.order-card');
+      const orderId = card.dataset.orderId;
+      const nextStatus = button.dataset.status;
+
+      if (!token) {
+        alert('Faça login novamente para operar pedidos.');
+        return;
+      }
+
+      const response = await fetch(`/orders/${orderId}/status`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ status: nextStatus })
+      });
+
+      if (!response.ok) {
+        const err = await response.json();
+        alert(err.detail || 'Falha ao atualizar pedido');
+        return;
+      }
+
+      const data = await response.json();
+      updateCardStatus(card, data.status);
+    });
+  });
+</script>
 {% endblock %}
