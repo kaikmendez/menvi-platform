@@ -1,12 +1,12 @@
 import { notFound } from 'next/navigation';
 import { getPublicMenu } from '@/lib/api';
-import { MenuBrowser } from '@/components/menu-browser';
+import { CheckoutForm } from '@/components/checkout-form';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
-export default async function MenuPage({ params }: PageProps) {
+export default async function CheckoutPage({ params }: PageProps) {
   const { slug } = await params;
   let menu;
   try {
@@ -15,5 +15,5 @@ export default async function MenuPage({ params }: PageProps) {
     notFound();
   }
 
-  return <MenuBrowser menu={menu} />;
+  return <CheckoutForm menu={menu} />;
 }
