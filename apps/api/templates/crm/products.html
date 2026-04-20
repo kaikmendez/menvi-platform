@@ -1,14 +1,28 @@
 {% extends 'crm/base.html' %}
 {% block title %}Produtos | CRM{% endblock %}
 {% block content %}
-<h2>Produtos</h2>
-<p>Controle de itens e precificação.</p>
-<table class="table">
-  <thead><tr><th>Produto</th><th>Status</th><th>Preço</th></tr></thead>
-  <tbody>
-    <tr><td>Pizza Margherita</td><td><span class="badge done">Ativo</span></td><td>R$ 49,90</td></tr>
-    <tr><td>Pizza Calabresa</td><td><span class="badge done">Ativo</span></td><td>R$ 52,90</td></tr>
-    <tr><td>Brownie</td><td><span class="badge pending">Pausado</span></td><td>R$ 18,00</td></tr>
-  </tbody>
-</table>
+<div class="page-head">
+  <div>
+    <h2>Gestão de produtos</h2>
+    <p class="muted">Controle disponibilidade do cardápio com ações rápidas.</p>
+  </div>
+  <button class="btn" id="products-refresh" type="button">⟳ Atualizar</button>
+</div>
+
+<div class="table-wrap">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Produto</th>
+        <th>Categoria</th>
+        <th>Preço</th>
+        <th>Status</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody id="products-table-body"></tbody>
+  </table>
+</div>
+
+<script src="/static/js/crm-products.js"></script>
 {% endblock %}

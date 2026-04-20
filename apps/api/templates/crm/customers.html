@@ -1,10 +1,37 @@
 {% extends 'crm/base.html' %}
 {% block title %}Clientes | CRM{% endblock %}
 {% block content %}
-<h2>Clientes</h2>
-<p>Dados de clientes para relacionamento.</p>
-<div class="card">
-  <div class="row"><span>Clientes ativos (30 dias)</span><strong>124</strong></div>
-  <div class="row" style="margin-top:8px;"><span>Novos hoje</span><strong>5</strong></div>
+<div class="page-head">
+  <div>
+    <h2>Clientes</h2>
+    <p class="muted">Relacionamento com base em histórico de pedidos e ticket médio.</p>
+  </div>
+  <button class="btn" id="customers-refresh" type="button">⟳ Atualizar</button>
 </div>
+
+<div class="crm-grid">
+  <div class="table-wrap">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Cliente</th>
+          <th>Telefone</th>
+          <th>Pedidos</th>
+          <th>Último pedido</th>
+          <th>Ticket médio</th>
+          <th>Total gasto</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="customers-table-body"></tbody>
+    </table>
+  </div>
+
+  <aside class="card detail-drawer" id="customer-history">
+    <h3>Histórico do cliente</h3>
+    <p class="muted">Selecione um cliente para visualizar pedidos anteriores.</p>
+  </aside>
+</div>
+
+<script src="/static/js/crm-customers.js"></script>
 {% endblock %}

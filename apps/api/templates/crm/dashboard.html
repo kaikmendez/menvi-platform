@@ -1,18 +1,19 @@
 {% extends 'crm/base.html' %}
-{% block title %}Pedidos | CRM{% endblock %}
+{% block title %}Visão geral | CRM{% endblock %}
 {% block content %}
 <div class="page-head">
   <div>
-    <h2>Pedidos</h2>
-    <p>Gerencie os pedidos do restaurante conectados ao cardápio digital.</p>
+    <h2>Visão geral da operação</h2>
+    <p class="muted">Monitore a fila do cardápio digital e atue rapidamente nos pedidos prioritários.</p>
   </div>
   <button class="btn" id="refresh-orders" type="button">⟳ Atualizar</button>
 </div>
 
-<div class="kpis">
-  <div class="kpi"><span>Total</span><strong id="kpi-total">0</strong></div>
-  <div class="kpi warning"><span>Pendentes</span><strong id="kpi-pending">0</strong></div>
-  <div class="kpi processing"><span>Em andamento</span><strong id="kpi-processing">0</strong></div>
+<div class="kpis kpis-4">
+  <div class="kpi"><span>Pedidos hoje</span><strong id="kpi-total">0</strong><small id="kpi-last">-</small></div>
+  <div class="kpi warning"><span>Pendentes</span><strong id="kpi-pending">0</strong><small>Aguardando confirmação</small></div>
+  <div class="kpi processing"><span>Em produção</span><strong id="kpi-processing">0</strong><small>CONFIRMED / PREPARING / READY</small></div>
+  <div class="kpi"><span>Faturamento do dia</span><strong id="kpi-revenue">R$ 0,00</strong><small>Soma dos pedidos listados</small></div>
 </div>
 
 <div class="filters">
@@ -26,17 +27,19 @@
 </div>
 
 <div class="crm-grid">
-  <div id="orders-list"></div>
-  <aside class="card" id="order-detail">
+  <div>
+    <h3 class="section-title">Fila operacional</h3>
+    <div id="orders-list"></div>
+  </div>
+  <aside class="card detail-drawer" id="order-detail">
     <h3>Detalhes do pedido</h3>
-    <p class="muted">Selecione um pedido para ver os itens.</p>
+    <p class="muted">Selecione um pedido para abrir os detalhes completos.</p>
   </aside>
 </div>
 
 <p class="muted" id="realtime-note" style="margin-top: 10px;">
-  Atualização em tempo real (WebSocket) ainda não ativada; este painel usa refetch manual e por mudança de status.
+  Atualização em tempo real ainda não habilitada; usando refetch manual e automático após ações.
 </p>
 
 <script src="/static/js/crm-dashboard.js"></script>
-
 {% endblock %}

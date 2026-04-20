@@ -7,23 +7,39 @@
     <link rel="stylesheet" href="/static/css/crm.css" />
   </head>
   <body>
+    <div class="crm-bg"></div>
     <div class="layout">
       <aside class="sidebar">
-        <div class="logo">Menvi CRM</div>
-        <nav class="menu">
-          <a href="/crm/dashboard" data-nav="dashboard">Pedidos</a>
-          <a href="/crm/orders" data-nav="orders">Fila detalhada</a>
-          <a href="/crm/customers" data-nav="customers">Clientes</a>
-          <a href="/crm/products" data-nav="products">Produtos</a>
-          <a href="#" data-nav="settings">Configurações (teste)</a>
-          <a href="#" data-nav="reports">Relatórios (teste)</a>
-          <a href="/crm/login" data-nav="logout">Sair</a>
-        </nav>
+        <div>
+          <div class="logo-wrap">
+            <div class="logo-mark">M</div>
+            <div>
+              <div class="logo">Menvi CRM</div>
+              <small>Operação de pedidos</small>
+            </div>
+          </div>
+
+          <nav class="menu">
+            <a href="/crm/dashboard" data-nav="dashboard">Visão geral</a>
+            <a href="/crm/orders" data-nav="orders">Fila operacional</a>
+            <a href="/crm/customers" data-nav="customers">Clientes</a>
+            <a href="/crm/products" data-nav="products">Produtos</a>
+          </nav>
+        </div>
+
+        <a href="/crm/login" class="menu-logout" data-nav="logout">Sair</a>
       </aside>
+
       <section class="content">
         <header class="topbar">
-          <strong>⚡ WPP AI</strong>
-          <span class="title">Painel do restaurante</span>
+          <div>
+            <strong>Restaurante Demo</strong>
+            <p class="muted">Central operacional de pedidos</p>
+          </div>
+          <div class="topbar-actions">
+            <span class="pill success">Loja aberta</span>
+            <span class="pill">Entrega ativa</span>
+          </div>
         </header>
         <div class="panel">{% block content %}{% endblock %}</div>
       </section>

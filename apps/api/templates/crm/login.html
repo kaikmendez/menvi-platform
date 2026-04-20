@@ -8,23 +8,32 @@
   </head>
   <body>
     <div class="crm-login-shell">
-      <div class="crm-login-top">Menvi CRM</div>
-      <section class="crm-login-panel">
-        <h1>Login CRM</h1>
-        <p>Acesso exclusivo para o restaurante gerenciar pedidos.</p>
+      <section class="crm-login-panel premium">
+        <div class="login-brand">
+          <div class="logo-mark">M</div>
+          <div>
+            <strong>Menvi CRM</strong>
+            <p>Painel exclusivo para restaurantes parceiros.</p>
+          </div>
+        </div>
+
+        <h1>Bem-vindo de volta</h1>
+        <p>Acesse sua central para acompanhar pedidos, clientes e cardápio em tempo real operacional.</p>
 
         <div class="crm-login-card">
-          <p>Credenciais de teste: <strong>admin@menvi.com</strong> / <strong>123456</strong>.</p>
-          <div class="crm-login-row">
-            <input id="email" class="crm-login-input" placeholder="E-mail" value="admin@menvi.com" />
-            <input id="password" class="crm-login-input" type="password" placeholder="Senha" value="123456" />
-          </div>
-          <button id="loginBtn" class="crm-login-btn">Entrar</button>
+          <label class="muted" for="email">E-mail</label>
+          <input id="email" class="crm-login-input" placeholder="E-mail" value="admin@menvi.com" />
+
+          <label class="muted" for="password" style="display:block; margin-top:10px;">Senha</label>
+          <input id="password" class="crm-login-input" type="password" placeholder="Senha" value="123456" />
+
+          <button id="loginBtn" class="crm-login-btn">Entrar no CRM</button>
+          <p class="muted" style="margin-top:10px;">Credenciais demo: <strong>admin@menvi.com</strong> / <strong>123456</strong>.</p>
         </div>
       </section>
     </div>
 
-    <div id="toast" class="toast">Autenticação simulada com sucesso</div>
+    <div id="toast" class="toast">Login realizado com sucesso</div>
     <script src="/static/js/crm-login.js"></script>
   </body>
 </html>
