@@ -1,6 +1,19 @@
 {% extends 'base.html' %}
+{% block title %}Carrinho | Menvi{% endblock %}
 {% block content %}
-<h1>Carrinho</h1>
-<p>Seu carrinho está vazio.</p>
-<button>Finalizar pedido</button>
+<h2>Carrinho</h2>
+<p>Resumo do pedido com experiência de checkout rápida.</p>
+
+<table class="table">
+  <thead><tr><th>Item</th><th>Qtd</th><th>Total</th></tr></thead>
+  <tbody>
+    <tr><td>Pizza Margherita</td><td>1</td><td>R$ 49,90</td></tr>
+    <tr><td>Bebida Lata</td><td>2</td><td>R$ 14,00</td></tr>
+  </tbody>
+</table>
+
+<div class="row" style="margin-top:14px;">
+  <strong>Total: R$ 63,90</strong>
+  <button class="btn btn-primary" onclick="showToast('Pedido enviado para o restaurante')">Finalizar pedido</button>
+</div>
 {% endblock %}

@@ -1,5 +1,12 @@
 {% extends 'base.html' %}
+{% block title %}Categorias | Menvi{% endblock %}
 {% block content %}
-<h1>Categorias</h1>
-<ul><li>Pizzas</li><li>Bebidas</li><li>Sobremesas</li></ul>
+<h2>Categorias</h2>
+<p>Organize o catálogo por sessões para facilitar descoberta e conversão.</p>
+
+<div class="grid">
+  <article class="card row"><div><h3>Pizzas</h3><small class="muted">18 itens</small></div><a class="btn btn-secondary" href="/menu/products">Ver</a></article>
+  <article class="card row"><div><h3>Bebidas</h3><small class="muted">12 itens</small></div><a class="btn btn-secondary" href="/menu/products">Ver</a></article>
+  <article class="card row"><div><h3>Sobremesas</h3><small class="muted">8 itens</small></div><a class="btn btn-secondary" href="/menu/products">Ver</a></article>
+</div>
 {% endblock %}

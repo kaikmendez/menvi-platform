@@ -1,5 +1,14 @@
 {% extends 'base.html' %}
+{% block title %}CRM Pedidos | Menvi{% endblock %}
 {% block content %}
-<h1>Pedidos</h1>
-<table border="1" cellpadding="6"><tr><th>Pedido</th><th>Status</th></tr><tr><td>#1001</td><td>PENDING</td></tr></table>
+<h2>Pedidos</h2>
+<p>Monitoramento de status e fila operacional.</p>
+
+<table class="table">
+  <thead><tr><th>Pedido</th><th>Cliente</th><th>Status</th><th>Total</th></tr></thead>
+  <tbody>
+    <tr><td>#1001</td><td>João</td><td><span class="badge pending">PENDING</span></td><td>R$ 63,90</td></tr>
+    <tr><td>#1002</td><td>Maria</td><td><span class="badge ok">READY</span></td><td>R$ 82,40</td></tr>
+  </tbody>
+</table>
 {% endblock %}

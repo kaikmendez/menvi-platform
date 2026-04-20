@@ -1,10 +1,17 @@
 {% extends 'base.html' %}
+{% block title %}Menu Digital | Menvi{% endblock %}
 {% block content %}
-<h1>Menu Digital</h1>
-<p>Home do restaurante.</p>
-<ul>
-  <li><a href="/menu/categories">Categorias</a></li>
-  <li><a href="/menu/products">Produtos</a></li>
-  <li><a href="/menu/cart">Carrinho</a></li>
-</ul>
+<h1>Cardápio Digital</h1>
+<p>Experiência premium para o cliente escolher, personalizar e finalizar pedidos em poucos cliques.</p>
+
+<div class="kpis">
+  <div class="kpi"><span class="muted">Tempo médio</span><strong>4 min</strong></div>
+  <div class="kpi"><span class="muted">Itens em destaque</span><strong>12</strong></div>
+  <div class="kpi"><span class="muted">Avaliação</span><strong>4.9 ★</strong></div>
+</div>
+
+<div style="margin-top:16px" class="row">
+  <a class="btn btn-primary" href="/menu/categories">Explorar categorias</a>
+  <a class="btn btn-secondary" href="/menu/cart">Ver carrinho</a>
+</div>
 {% endblock %}

@@ -1,6 +1,13 @@
 {% extends 'base.html' %}
+{% block title %}CRM Dashboard | Menvi{% endblock %}
 {% block content %}
-<h1>Dashboard CRM</h1>
-<p>Pedidos hoje: 12</p>
-<p><a href="/crm/orders">Pedidos</a> | <a href="/crm/customers">Clientes</a> | <a href="/crm/products">Produtos</a></p>
+<h2>Dashboard CRM</h2>
+<p>Visão executiva com métricas operacionais do restaurante.</p>
+
+<div class="kpis">
+  <div class="kpi"><span class="muted">Pedidos hoje</span><strong>12</strong></div>
+  <div class="kpi"><span class="muted">Clientes ativos</span><strong>38</strong></div>
+  <div class="kpi"><span class="muted">Ticket médio</span><strong>R$ 58,20</strong></div>
+  <div class="kpi"><span class="muted">Tempo preparo</span><strong>22 min</strong></div>
+</div>
 {% endblock %}

@@ -1,8 +1,19 @@
 {% extends 'base.html' %}
+{% block title %}Produtos | Menvi{% endblock %}
 {% block content %}
-<h1>Produtos</h1>
-<ul>
-  <li>Pizza Margherita - R$ 49,90 (<a href="/menu/product/p1">ver</a>)</li>
-  <li>Pizza Calabresa - R$ 52,90 (<a href="/menu/product/p2">ver</a>)</li>
-</ul>
+<h2>Produtos</h2>
+<p>Vitrine do cardápio com preço e CTA rápidos.</p>
+
+<div class="grid">
+  <article class="card">
+    <h3>Pizza Margherita</h3>
+    <p class="muted">Molho artesanal, muçarela fresca e manjericão.</p>
+    <div class="row"><span class="price">R$ 49,90</span><a class="btn btn-primary" href="/menu/product/p1">Detalhes</a></div>
+  </article>
+  <article class="card">
+    <h3>Pizza Calabresa</h3>
+    <p class="muted">Calabresa premium, cebola roxa e borda crocante.</p>
+    <div class="row"><span class="price">R$ 52,90</span><a class="btn btn-primary" href="/menu/product/p2">Detalhes</a></div>
+  </article>
+</div>
 {% endblock %}

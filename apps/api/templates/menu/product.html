@@ -1,6 +1,18 @@
 {% extends 'base.html' %}
+{% block title %}Produto {{ product_id }} | Menvi{% endblock %}
 {% block content %}
-<h1>Produto {{ product_id }}</h1>
-<p>Detalhes iniciais do produto.</p>
-<button>Adicionar ao carrinho</button>
+<h2>Produto {{ product_id }}</h2>
+<p>Customize opcionais e aumente ticket médio com sugestões inteligentes.</p>
+
+<div class="card" style="max-width:520px;">
+  <h3>Pizza Especial da Casa</h3>
+  <p class="muted">Escolha o tamanho, borda e adicionais.</p>
+  <label class="muted">Tamanho</label>
+  <select class="select" style="margin-top:6px; margin-bottom:12px;">
+    <option>Média</option>
+    <option>Grande (+R$8)</option>
+    <option>Família (+R$16)</option>
+  </select>
+  <button class="btn btn-success" onclick="showToast('Item adicionado ao carrinho')">Adicionar ao carrinho</button>
+</div>
 {% endblock %}

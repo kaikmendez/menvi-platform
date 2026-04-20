@@ -1,10 +1,15 @@
 {% extends 'base.html' %}
+{% block title %}CRM Login | Menvi{% endblock %}
 {% block content %}
-<h1>Login CRM</h1>
-<p>Use admin@menvi.com / 123456 após chamar <code>POST /auth/seed-admin</code>.</p>
-<form method="post" action="#">
-  <input placeholder="E-mail" />
-  <input placeholder="Senha" type="password" />
-  <button>Entrar</button>
-</form>
+<h2>Login CRM</h2>
+<p>Faça login para acompanhar pedidos em tempo real.</p>
+
+<div class="card" style="max-width:540px;">
+  <p class="muted">Credenciais de teste: <strong>admin@menvi.com</strong> / <strong>123456</strong>.</p>
+  <div class="grid" style="grid-template-columns:1fr 1fr;">
+    <input id="email" class="input" placeholder="E-mail" value="admin@menvi.com" />
+    <input id="password" class="input" placeholder="Senha" type="password" value="123456" />
+  </div>
+  <button class="btn btn-primary" style="margin-top:12px;" onclick="showToast('Autenticação simulada com sucesso')">Entrar</button>
+</div>
 {% endblock %}
