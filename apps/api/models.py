@@ -1,8 +1,8 @@
 import enum
 from datetime import datetime
 
-from sqlalchemy import Boolean, DateTime, Enum, ForeignKey, Numeric, String, Text, Integer
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy import Boolean, DateTime, Enum, ForeignKey, Integer, Numeric, String, Text
+from sqlalchemy.orm import Mapped, mapped_column
 
 from .db import Base
 
@@ -37,7 +37,6 @@ class Restaurant(Base):
     slug: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
     phone: Mapped[str | None] = mapped_column(String(20), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
-    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
 
 class User(Base):
@@ -58,6 +57,7 @@ class Customer(Base):
     restaurant_id: Mapped[str] = mapped_column(ForeignKey('restaurants.id', ondelete='CASCADE'))
     name: Mapped[str] = mapped_column(String(120), nullable=False)
     phone: Mapped[str] = mapped_column(String(20), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
 
 class Category(Base):
@@ -100,6 +100,7 @@ class Order(Base):
     status: Mapped[OrderStatus] = mapped_column(Enum(OrderStatus), default=OrderStatus.PENDING)
     total_amount: Mapped[float] = mapped_column(Numeric(10, 2), nullable=False)
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
 
 class OrderItem(Base):
