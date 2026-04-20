@@ -1,13 +1,21 @@
-{% extends 'base.html' %}
-{% block title %}CRM Dashboard | Menvi{% endblock %}
+{% extends 'crm/base.html' %}
+{% block title %}Dashboard CRM | Menvi{% endblock %}
 {% block content %}
-<h2>Dashboard CRM</h2>
-<p>Visão executiva com métricas operacionais do restaurante.</p>
+<h2>Painel de Pedidos</h2>
+<p>Resumo operacional para priorizar atendimento.</p>
 
 <div class="kpis">
-  <div class="kpi"><span class="muted">Pedidos hoje</span><strong>12</strong></div>
-  <div class="kpi"><span class="muted">Clientes ativos</span><strong>38</strong></div>
-  <div class="kpi"><span class="muted">Ticket médio</span><strong>R$ 58,20</strong></div>
-  <div class="kpi"><span class="muted">Tempo preparo</span><strong>22 min</strong></div>
+  <div class="kpi pending">
+    <span>Pendentes de atendimento</span>
+    <strong>08</strong>
+  </div>
+  <div class="kpi processing">
+    <span>Em andamento</span>
+    <strong>14</strong>
+  </div>
+  <div class="kpi done">
+    <span>Entregues hoje</span>
+    <strong>36</strong>
+  </div>
 </div>
 {% endblock %}

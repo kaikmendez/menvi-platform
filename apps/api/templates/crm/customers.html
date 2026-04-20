@@ -1,12 +1,10 @@
-{% extends 'base.html' %}
-{% block title %}CRM Clientes | Menvi{% endblock %}
+{% extends 'crm/base.html' %}
+{% block title %}Clientes | CRM{% endblock %}
 {% block content %}
 <h2>Clientes</h2>
-<p>Base de relacionamento e recorrência.</p>
-
-<div class="grid">
-  <article class="card"><h3>João Souza</h3><p class="muted">(11) 99999-0001 • 12 pedidos</p></article>
-  <article class="card"><h3>Maria Lima</h3><p class="muted">(11) 98888-0002 • 8 pedidos</p></article>
-  <article class="card"><h3>Pedro Alves</h3><p class="muted">(11) 97777-0003 • 5 pedidos</p></article>
+<p>Base de relacionamento do restaurante.</p>
+<div class="kpis">
+  <div class="kpi"><span>Clientes ativos (30 dias)</span><strong>124</strong></div>
+  <div class="kpi"><span>Novos hoje</span><strong>5</strong></div>
 </div>
 {% endblock %}

@@ -1,12 +1,14 @@
-{% extends 'base.html' %}
-{% block title %}CRM Produtos | Menvi{% endblock %}
+{% extends 'crm/base.html' %}
+{% block title %}Produtos | CRM{% endblock %}
 {% block content %}
 <h2>Produtos</h2>
-<p>Gestão de catálogo e precificação.</p>
-
-<div class="grid">
-  <article class="card row"><div><h3>Pizza Margherita</h3><small class="muted">Ativo</small></div><strong>R$ 49,90</strong></article>
-  <article class="card row"><div><h3>Pizza Calabresa</h3><small class="muted">Ativo</small></div><strong>R$ 52,90</strong></article>
-  <article class="card row"><div><h3>Brownie</h3><small class="muted">Ativo</small></div><strong>R$ 18,00</strong></article>
-</div>
+<p>Gestão de catálogo e preços.</p>
+<table class="table">
+  <thead><tr><th>Produto</th><th>Status</th><th>Preço</th></tr></thead>
+  <tbody>
+    <tr><td>Pizza Margherita</td><td><span class="badge done">ATIVO</span></td><td>R$ 49,90</td></tr>
+    <tr><td>Pizza Calabresa</td><td><span class="badge done">ATIVO</span></td><td>R$ 52,90</td></tr>
+    <tr><td>Brownie</td><td><span class="badge pending">PAUSADO</span></td><td>R$ 18,00</td></tr>
+  </tbody>
+</table>
 {% endblock %}

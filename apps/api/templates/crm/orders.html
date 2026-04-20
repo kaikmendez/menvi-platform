@@ -1,14 +1,15 @@
-{% extends 'base.html' %}
-{% block title %}CRM Pedidos | Menvi{% endblock %}
+{% extends 'crm/base.html' %}
+{% block title %}Pedidos | CRM{% endblock %}
 {% block content %}
 <h2>Pedidos</h2>
-<p>Monitoramento de status e fila operacional.</p>
+<p>Controle da fila por status.</p>
 
 <table class="table">
-  <thead><tr><th>Pedido</th><th>Cliente</th><th>Status</th><th>Total</th></tr></thead>
+  <thead><tr><th>#</th><th>Cliente</th><th>Status</th><th>Total</th></tr></thead>
   <tbody>
-    <tr><td>#1001</td><td>João</td><td><span class="badge pending">PENDING</span></td><td>R$ 63,90</td></tr>
-    <tr><td>#1002</td><td>Maria</td><td><span class="badge ok">READY</span></td><td>R$ 82,40</td></tr>
+    <tr><td>1001</td><td>João</td><td><span class="badge pending">PENDENTE</span></td><td>R$ 63,90</td></tr>
+    <tr><td>1002</td><td>Maria</td><td><span class="badge processing">EM ANDAMENTO</span></td><td>R$ 82,40</td></tr>
+    <tr><td>1003</td><td>Ana</td><td><span class="badge done">ENTREGUE</span></td><td>R$ 45,00</td></tr>
   </tbody>
 </table>
 {% endblock %}

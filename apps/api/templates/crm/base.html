@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}CRM | Menvi{% endblock %}</title>
+    <style>
+      :root {
+        --bg: #f3f6fb;
+        --surface: #fff;
+        --text: #1f2a37;
+        --muted: #62748e;
+        --primary: #2a64dd;
+        --primary-soft: #edf3ff;
+        --border: #d6e0ee;
+        --warning: #f59f00;
+        --processing: #2f80ed;
+        --done: #1f9d64;
+      }
+      * { box-sizing: border-box; }
+      body { margin: 0; font-family: Inter, Arial, sans-serif; background: var(--bg); color: var(--text); }
+      .layout { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+      .sidebar { background: #fff; border-right: 1px solid var(--border); padding: 20px 14px; }
+      .logo { font-weight: 800; color: var(--primary); margin-bottom: 18px; }
+      .menu { display: grid; gap: 8px; }
+      .menu a {
+        text-decoration: none; color: var(--text); border: 1px solid transparent;
+        border-radius: 10px; padding: 10px 12px; font-weight: 600; font-size: 14px;
+      }
+      .menu a:hover, .menu a.active { background: var(--primary-soft); border-color: #c8d8ff; color: var(--primary); }
+      .content { padding: 20px; }
+      .panel { border: 1px solid var(--border); border-radius: 14px; background: var(--surface); padding: 20px; }
+      h1, h2, h3 { margin: 0 0 10px; }
+      p { color: var(--muted); line-height: 1.5; }
+      .kpis { display:grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap: 12px; margin-top: 12px; }
+      .kpi { border: 1px solid var(--border); border-radius: 12px; padding: 14px; }
+      .kpi strong { display:block; margin-top: 8px; font-size: 26px; }
+      .kpi.pending strong { color: var(--warning); }
+      .kpi.processing strong { color: var(--processing); }
+      .kpi.done strong { color: var(--done); }
+      .table { width:100%; border-collapse: collapse; }
+      .table th, .table td { text-align:left; padding:10px; border-bottom:1px solid var(--border); }
+      .badge { padding: 4px 8px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+      .badge.pending { color: #a86400; background: #fff3da; }
+      .badge.processing { color: #1059c9; background: #eaf2ff; }
+      .badge.done { color: #0f7a4d; background: #e6f7ef; }
+      @media (max-width: 900px) {
+        .layout { grid-template-columns: 1fr; }
+        .sidebar { border-right: 0; border-bottom: 1px solid var(--border); }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="logo">Menvi CRM</div>
+        <nav class="menu">
+          <a href="/crm/dashboard" data-nav="dashboard">Dashboard</a>
+          <a href="/crm/orders" data-nav="orders">Pedidos</a>
+          <a href="/crm/customers" data-nav="customers">Clientes</a>
+          <a href="/crm/products" data-nav="products">Produtos</a>
+          <a href="/crm/login" data-nav="logout">Sair</a>
+        </nav>
+      </aside>
+      <section class="content">
+        <div class="panel">{% block content %}{% endblock %}</div>
+      </section>
+    </div>
+
+    <script>
+      const p = location.pathname;
+      const map = {
+        '/crm/dashboard': 'dashboard',
+        '/crm/orders': 'orders',
+        '/crm/customers': 'customers',
+        '/crm/products': 'products',
+        '/crm/login': 'logout'
+      };
+      const nav = map[p];
+      document.querySelectorAll('.menu a[data-nav]').forEach((a) => {
+        if (a.dataset.nav === nav) a.classList.add('active');
+      });
+    </script>
+  </body>
+</html>
