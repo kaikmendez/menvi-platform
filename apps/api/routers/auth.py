@@ -1,6 +1,7 @@
 import uuid
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from ..db import get_db
@@ -120,15 +121,18 @@ def _seed_demo_data(db: Session):
 
 @router.post('/login', response_model=TokenOut)
 def login(payload: LoginIn, db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.email == payload.email).first()
+    email = payload.email.strip().lower()
+    password = payload.password.strip()
 
-    if not user and payload.email.lower() == DEMO_EMAIL and payload.password == DEMO_PASSWORD:
+    user = db.query(User).filter(func.lower(User.email) == email).first()
+
+    if not user and email == DEMO_EMAIL and password == DEMO_PASSWORD:
         # Facilita a experiência local: se o banco estiver vazio, cria automaticamente o admin demo.
         user, _ = _seed_demo_data(db)
 
-    password_ok = bool(user and verify_password(payload.password, user.password_hash))
+    password_ok = bool(user and verify_password(password, user.password_hash))
 
-    if user and not password_ok and payload.email.lower() == DEMO_EMAIL and payload.password == DEMO_PASSWORD:
+    if user and not password_ok and email == DEMO_EMAIL and password == DEMO_PASSWORD:
         # Migração automática de hash legado quebrado em ambientes com incompatibilidade bcrypt/passlib.
         user.password_hash = hash_password(DEMO_PASSWORD)
         db.commit()

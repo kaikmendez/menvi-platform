@@ -6,8 +6,13 @@
   const passwordEl = document.getElementById('password');
 
   const doLogin = async () => {
-    const email = emailEl.value;
-    const password = passwordEl.value;
+    const email = emailEl.value.trim();
+    const password = passwordEl.value.trim();
+
+    if (!email || !password) {
+      alert('Preencha e-mail e senha.');
+      return;
+    }
 
     loginBtn.disabled = true;
     loginBtn.textContent = 'Entrando...';
@@ -22,7 +27,8 @@
     loginBtn.textContent = 'Entrar no CRM';
 
     if (!response.ok) {
-      alert('Credenciais inválidas');
+      const err = await response.json().catch(() => ({ detail: null }));
+      alert(err.detail || 'Credenciais inválidas');
       return;
     }
 
