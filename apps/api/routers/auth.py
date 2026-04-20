@@ -23,29 +23,22 @@ from ..security import create_access_token, hash_password, verify_password
 router = APIRouter(prefix='/auth', tags=['auth'])
 
 
-@router.post('/login', response_model=TokenOut)
-def login(payload: LoginIn, db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.email == payload.email).first()
-    if not user or not verify_password(payload.password, user.password_hash):
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Credenciais inválidas')
-
-    token = create_access_token(user.id, {'restaurant_id': user.restaurant_id, 'email': user.email, 'role': user.role.value})
-    return TokenOut(access_token=token)
+DEMO_EMAIL = 'admin@menvi.com'
+DEMO_PASSWORD = '123456'
 
 
-@router.post('/seed-admin')
-def seed_admin(db: Session = Depends(get_db)):
-    existing = db.query(User).filter(User.email == 'admin@menvi.com').first()
+def _seed_demo_data(db: Session):
+    existing = db.query(User).filter(User.email == DEMO_EMAIL).first()
     if existing:
-        return {'message': 'Admin já existe'}
+        return existing, False
 
     restaurant = Restaurant(id=str(uuid.uuid4()), name='Restaurante Demo', slug='restaurante-demo')
     user = User(
         id=str(uuid.uuid4()),
         restaurant_id=restaurant.id,
         name='Admin',
-        email='admin@menvi.com',
-        password_hash=hash_password('123456'),
+        email=DEMO_EMAIL,
+        password_hash=hash_password(DEMO_PASSWORD),
         role=UserRole.OWNER,
     )
 
@@ -121,10 +114,36 @@ def seed_admin(db: Session = Depends(get_db)):
         order_item_option,
     ])
     db.commit()
+    db.refresh(user)
+    return user, True
+
+
+@router.post('/login', response_model=TokenOut)
+def login(payload: LoginIn, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.email == payload.email).first()
+
+    if not user and payload.email.lower() == DEMO_EMAIL and payload.password == DEMO_PASSWORD:
+        # Facilita a experiência local: se o banco estiver vazio, cria automaticamente o admin demo.
+        user, _ = _seed_demo_data(db)
+
+    if not user or not verify_password(payload.password, user.password_hash):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Credenciais inválidas')
+
+    token = create_access_token(user.id, {'restaurant_id': user.restaurant_id, 'email': user.email, 'role': user.role.value})
+    return TokenOut(access_token=token)
+
+
+@router.post('/seed-admin')
+def seed_admin(db: Session = Depends(get_db)):
+    user, created = _seed_demo_data(db)
+    if not created:
+        return {'message': 'Admin já existe'}
+
+    restaurant = db.query(Restaurant).filter(Restaurant.id == user.restaurant_id).first()
 
     return {
         'message': 'Admin e dados iniciais criados',
-        'email': 'admin@menvi.com',
-        'password': '123456',
-        'restaurant_slug': restaurant.slug,
+        'email': DEMO_EMAIL,
+        'password': DEMO_PASSWORD,
+        'restaurant_slug': restaurant.slug if restaurant else 'restaurante-demo',
     }
