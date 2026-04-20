@@ -1,19 +1,58 @@
 {% extends 'base.html' %}
 {% block title %}Carrinho | Menvi{% endblock %}
 {% block content %}
-<h2>Carrinho</h2>
-<p>Resumo do pedido com experiência de checkout rápida.</p>
+<h2>Checkout do pedido</h2>
+<p>Selecione itens do cardápio, informe seus dados e envie seu pedido para o restaurante.</p>
 
-<table class="table">
-  <thead><tr><th>Item</th><th>Qtd</th><th>Total</th></tr></thead>
-  <tbody>
-    <tr><td>Pizza Margherita</td><td>1</td><td>R$ 49,90</td></tr>
-    <tr><td>Bebida Lata</td><td>2</td><td>R$ 14,00</td></tr>
-  </tbody>
-</table>
+<div class="grid" style="grid-template-columns: 1.2fr .8fr; align-items:start;">
+  <section class="card">
+    <h3>1) Monte seu pedido</h3>
+    <div class="row" style="margin-bottom:10px;">
+      <label for="product-select" class="muted">Produto</label>
+      <select id="product-select" class="select" style="max-width:340px;"></select>
+    </div>
 
-<div class="row" style="margin-top:14px;">
-  <strong>Total: R$ 63,90</strong>
-  <button class="btn btn-primary" onclick="showToast('Pedido enviado para o restaurante')">Finalizar pedido</button>
+    <div id="product-options" style="margin-bottom:10px;"></div>
+
+    <div class="row" style="margin-bottom:10px;">
+      <label for="item-qty" class="muted">Quantidade</label>
+      <input id="item-qty" class="input" type="number" min="1" value="1" style="max-width:120px;" />
+    </div>
+
+    <div style="margin-bottom:10px;">
+      <label class="muted" for="item-note">Observação do item</label>
+      <input id="item-note" class="input" type="text" placeholder="Ex.: sem cebola" />
+    </div>
+
+    <button class="btn btn-secondary" id="add-item-btn" type="button">Adicionar item</button>
+
+    <h3 style="margin-top:16px;">Itens adicionados</h3>
+    <div id="cart-items" class="order-items"></div>
+  </section>
+
+  <section class="card">
+    <h3>2) Seus dados</h3>
+    <div style="margin-bottom:10px;">
+      <label class="muted" for="customer-name">Nome</label>
+      <input id="customer-name" class="input" type="text" placeholder="Seu nome" />
+    </div>
+    <div style="margin-bottom:10px;">
+      <label class="muted" for="customer-phone">Telefone</label>
+      <input id="customer-phone" class="input" type="text" placeholder="(11) 90000-0000" />
+    </div>
+    <div style="margin-bottom:10px;">
+      <label class="muted" for="order-notes">Observações do pedido</label>
+      <input id="order-notes" class="input" type="text" placeholder="Ex.: entregar na portaria" />
+    </div>
+
+    <div class="row" style="margin-top:14px;">
+      <strong>Total: <span id="order-total">R$ 0,00</span></strong>
+      <button class="btn btn-primary" id="submit-order-btn" type="button">Finalizar pedido</button>
+    </div>
+
+    <p id="order-feedback" class="muted" style="margin-top:12px;"></p>
+  </section>
 </div>
+
+<script src="/static/js/menu-cart.js"></script>
 {% endblock %}

@@ -4,15 +4,15 @@
 <div class="page-head">
   <div>
     <h2>Pedidos</h2>
-    <p>Gerencie os pedidos do seu restaurante</p>
+    <p>Gerencie os pedidos do restaurante conectados ao cardápio digital.</p>
   </div>
-  <button class="btn" onclick="window.location.reload()">⟳ Atualizar</button>
+  <button class="btn" id="refresh-orders" type="button">⟳ Atualizar</button>
 </div>
 
 <div class="kpis">
-  <div class="kpi"><span>Total hoje</span><strong id="kpi-total">{{ counts.total }}</strong></div>
-  <div class="kpi warning"><span>Pendentes</span><strong id="kpi-pending">{{ counts.pending }}</strong></div>
-  <div class="kpi processing"><span>Em andamento</span><strong id="kpi-processing">{{ counts.processing }}</strong></div>
+  <div class="kpi"><span>Total</span><strong id="kpi-total">0</strong></div>
+  <div class="kpi warning"><span>Pendentes</span><strong id="kpi-pending">0</strong></div>
+  <div class="kpi processing"><span>Em andamento</span><strong id="kpi-processing">0</strong></div>
 </div>
 
 <div class="filters">
@@ -25,31 +25,17 @@
   <button class="chip" data-filter="CANCELLED">Cancelado</button>
 </div>
 
-<div id="orders-list">
-  {% for order in orders %}
-  <div class="card order-card" data-status="{{ order.status }}" data-order-id="{{ order.id }}">
-    <div class="row">
-      <div>
-        <div class="code"># {{ order.code }}</div>
-        <div style="margin-top:4px;"><span class="badge pending status-label">{{ order.status }}</span></div>
-        <p style="margin-top:8px;">👤 {{ order.customer_name }} · 📞 {{ order.customer_phone }}</p>
-      </div>
-      <strong>R$ {{ '%.2f'|format(order.total_amount) }}</strong>
-    </div>
-
-    <div class="order-items">
-      <div class="row"><strong>{{ order.notes or 'Sem observações do pedido.' }}</strong></div>
-    </div>
-
-    <div class="actions">
-      <button class="btn btn-primary action-status" data-status="CONFIRMED">Confirmar</button>
-      <button class="btn btn-primary action-status" data-status="PREPARING">Preparar</button>
-      <button class="btn btn-primary action-status" data-status="DELIVERED">Entregue</button>
-      <button class="btn btn-danger action-status" data-status="CANCELLED">Cancelar</button>
-    </div>
-  </div>
-  {% endfor %}
+<div class="crm-grid">
+  <div id="orders-list"></div>
+  <aside class="card" id="order-detail">
+    <h3>Detalhes do pedido</h3>
+    <p class="muted">Selecione um pedido para ver os itens.</p>
+  </aside>
 </div>
+
+<p class="muted" id="realtime-note" style="margin-top: 10px;">
+  Atualização em tempo real (WebSocket) ainda não ativada; este painel usa refetch manual e por mudança de status.
+</p>
 
 <script src="/static/js/crm-dashboard.js"></script>
 

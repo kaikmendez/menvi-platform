@@ -2,7 +2,7 @@ import enum
 from datetime import datetime
 
 from sqlalchemy import Boolean, DateTime, Enum, ForeignKey, Integer, Numeric, String, Text
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .db import Base
 
@@ -38,6 +38,12 @@ class Restaurant(Base):
     phone: Mapped[str | None] = mapped_column(String(20), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
+    users: Mapped[list['User']] = relationship(back_populates='restaurant', cascade='all, delete-orphan')
+    categories: Mapped[list['Category']] = relationship(back_populates='restaurant', cascade='all, delete-orphan')
+    products: Mapped[list['Product']] = relationship(back_populates='restaurant', cascade='all, delete-orphan')
+    customers: Mapped[list['Customer']] = relationship(back_populates='restaurant', cascade='all, delete-orphan')
+    orders: Mapped[list['Order']] = relationship(back_populates='restaurant', cascade='all, delete-orphan')
+
 
 class User(Base):
     __tablename__ = 'users'
@@ -49,6 +55,8 @@ class User(Base):
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
     role: Mapped[UserRole] = mapped_column(Enum(UserRole), default=UserRole.ATTENDANT)
 
+    restaurant: Mapped['Restaurant'] = relationship(back_populates='users')
+
 
 class Customer(Base):
     __tablename__ = 'customers'
@@ -59,6 +67,9 @@ class Customer(Base):
     phone: Mapped[str] = mapped_column(String(20), nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
+    restaurant: Mapped['Restaurant'] = relationship(back_populates='customers')
+    orders: Mapped[list['Order']] = relationship(back_populates='customer')
+
 
 class Category(Base):
     __tablename__ = 'categories'
@@ -67,6 +78,9 @@ class Category(Base):
     restaurant_id: Mapped[str] = mapped_column(ForeignKey('restaurants.id', ondelete='CASCADE'))
     name: Mapped[str] = mapped_column(String(120), nullable=False)
     sort_order: Mapped[int] = mapped_column(Integer, default=0)
+
+    restaurant: Mapped['Restaurant'] = relationship(back_populates='categories')
+    products: Mapped[list['Product']] = relationship(back_populates='category')
 
 
 class Product(Base):
@@ -80,6 +94,11 @@ class Product(Base):
     price: Mapped[float] = mapped_column(Numeric(10, 2), nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
 
+    restaurant: Mapped['Restaurant'] = relationship(back_populates='products')
+    category: Mapped['Category'] = relationship(back_populates='products')
+    options: Mapped[list['ProductOption']] = relationship(back_populates='product', cascade='all, delete-orphan')
+    order_items: Mapped[list['OrderItem']] = relationship(back_populates='product')
+
 
 class ProductOption(Base):
     __tablename__ = 'product_options'
@@ -89,6 +108,9 @@ class ProductOption(Base):
     name: Mapped[str] = mapped_column(String(120), nullable=False)
     price_impact: Mapped[float] = mapped_column(Numeric(10, 2), default=0)
     is_required: Mapped[bool] = mapped_column(Boolean, default=False)
+
+    product: Mapped['Product'] = relationship(back_populates='options')
+    item_links: Mapped[list['OrderItemOption']] = relationship(back_populates='product_option')
 
 
 class Order(Base):
@@ -102,6 +124,10 @@ class Order(Base):
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
+    restaurant: Mapped['Restaurant'] = relationship(back_populates='orders')
+    customer: Mapped['Customer'] = relationship(back_populates='orders')
+    items: Mapped[list['OrderItem']] = relationship(back_populates='order', cascade='all, delete-orphan')
+
 
 class OrderItem(Base):
     __tablename__ = 'order_items'
@@ -112,6 +138,21 @@ class OrderItem(Base):
     quantity: Mapped[int] = mapped_column(Integer, default=1)
     unit_price: Mapped[float] = mapped_column(Numeric(10, 2), nullable=False)
     note: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+    order: Mapped['Order'] = relationship(back_populates='items')
+    product: Mapped['Product'] = relationship(back_populates='order_items')
+    options: Mapped[list['OrderItemOption']] = relationship(back_populates='order_item', cascade='all, delete-orphan')
+
+
+class OrderItemOption(Base):
+    __tablename__ = 'order_item_options'
+
+    id: Mapped[str] = mapped_column(String, primary_key=True)
+    order_item_id: Mapped[str] = mapped_column(ForeignKey('order_items.id', ondelete='CASCADE'))
+    product_option_id: Mapped[str] = mapped_column(ForeignKey('product_options.id', ondelete='RESTRICT'))
+
+    order_item: Mapped['OrderItem'] = relationship(back_populates='options')
+    product_option: Mapped['ProductOption'] = relationship(back_populates='item_links')
 
 
 class Payment(Base):
