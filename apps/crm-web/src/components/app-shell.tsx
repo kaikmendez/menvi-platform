@@ -36,7 +36,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: '/painel', label: 'Painel', icon: LayoutDashboard },
   { href: '/fila', label: 'Fila de pedidos', icon: ChefHat },
   { href: '/pedidos', label: 'Histórico', icon: ClipboardList },
-  { href: '/cardapio', label: 'Cardápio', icon: UtensilsCrossed, disabled: true },
+  { href: '/cardapio', label: 'Cardápio', icon: UtensilsCrossed, roles: ['OWNER', 'MANAGER'] },
   { href: '/clientes', label: 'Clientes', icon: Users, disabled: true, roles: ['OWNER', 'MANAGER'] },
   {
     href: '/relatorios',

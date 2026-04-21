@@ -193,3 +193,57 @@ export interface OrderStatusUpdatePayload {
   status: OrderStatus;
   note?: string | null;
 }
+
+/** Espelha `CategoryOut` de apps/api/domain/menu/schemas.py. */
+export interface Category {
+  id: string;
+  name: string;
+  position: number;
+  is_active: boolean;
+}
+
+export interface CategoryCreatePayload {
+  name: string;
+  position?: number;
+  is_active?: boolean;
+}
+
+export interface CategoryUpdatePayload {
+  name?: string;
+  position?: number;
+  is_active?: boolean;
+}
+
+export interface ProductCreatePayload {
+  category_id: string;
+  name: string;
+  description?: string | null;
+  price: string;
+  image_url?: string | null;
+  is_available?: boolean;
+  position?: number;
+}
+
+export interface ProductUpdatePayload {
+  category_id?: string;
+  name?: string;
+  description?: string | null;
+  price?: string;
+  image_url?: string | null;
+  is_available?: boolean;
+  position?: number;
+}
+
+export interface ProductOptionCreatePayload {
+  name: string;
+  price_delta?: string;
+  is_available?: boolean;
+  position?: number;
+}
+
+export interface ProductOptionUpdatePayload {
+  name?: string;
+  price_delta?: string;
+  is_available?: boolean;
+  position?: number;
+}
