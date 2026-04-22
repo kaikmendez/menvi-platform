@@ -1,5 +1,5 @@
 /** Preset Tailwind compartilhado entre menu-web e crm-web.
- * Paleta Menvi baseada em vermelho/coral (referência: Mezero).
+ * Paleta Menvi — teal (#2EBDAB) + slate dark (#0F172A). Tokens em hsl(var(--*)).
  */
 
 /** @type {import('tailwindcss').Config} */
@@ -47,6 +47,15 @@ export default {
         card: {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
+        },
+        sidebar: {
+          DEFAULT: 'hsl(var(--sidebar))',
+          foreground: 'hsl(var(--sidebar-foreground))',
+          muted: 'hsl(var(--sidebar-muted))',
+          accent: 'hsl(var(--sidebar-accent))',
+          'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
+          border: 'hsl(var(--sidebar-border))',
+          ring: 'hsl(var(--sidebar-ring))',
         },
       },
       borderRadius: {

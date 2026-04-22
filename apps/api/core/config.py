@@ -49,6 +49,11 @@ class Settings(BaseSettings):
     whatsapp_access_token: str = ''
     whatsapp_verify_token: str = ''
 
+    # Web Push (VAPID)
+    vapid_public_key: str = ''
+    vapid_private_key: str = ''
+    vapid_subject: str = 'mailto:no-reply@menvi.app'
+
     @property
     def cors_origins(self) -> list[str]:
         return [o.strip() for o in self.api_cors_origins.split(',') if o.strip()]

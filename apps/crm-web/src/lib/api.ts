@@ -14,6 +14,7 @@ import type {
   ProductUpdatePayload,
   Restaurant,
   RestaurantSettings,
+  RestaurantSettingsUpdatePayload,
   RestaurantUpdatePayload,
   TokenPair,
 } from '@menvi/types';
@@ -74,6 +75,17 @@ export async function updateRestaurant(
 export async function getRestaurantSettings(token: string): Promise<RestaurantSettings> {
   return request<RestaurantSettings>('/crm/restaurant/settings', {
     headers: authHeaders(token),
+  });
+}
+
+export async function updateRestaurantSettings(
+  token: string,
+  payload: RestaurantSettingsUpdatePayload,
+): Promise<RestaurantSettings> {
+  return request<RestaurantSettings>('/crm/restaurant/settings', {
+    method: 'PATCH',
+    headers: authHeaders(token),
+    body: JSON.stringify(payload),
   });
 }
 

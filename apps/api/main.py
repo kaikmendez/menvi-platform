@@ -15,6 +15,7 @@ from .domain.billing.router import router as billing_router
 from .domain.customers.router import router as customers_router
 from .domain.menu.router import categories_router, products_router
 from .domain.orders.router import router as orders_router
+from .domain.push.router import router as push_router
 from .domain.restaurants.router import router as restaurant_router
 from .domain.users.router import router as users_router
 from .public.router import router as public_router
@@ -52,6 +53,7 @@ def health() -> dict[str, str]:
 
 # Públicos (cliente final)
 app.include_router(public_router)
+app.include_router(push_router)
 
 # CRM (restaurante)
 app.include_router(auth_router)
