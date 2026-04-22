@@ -45,6 +45,7 @@ export default function PedidosPage() {
       (o: Order) =>
         o.customer.name.toLowerCase().includes(needle) ||
         o.customer.phone.includes(needle) ||
+        (o.customer.address ?? '').toLowerCase().includes(needle) ||
         String(o.code).includes(needle),
     );
   }, [orders, q]);
@@ -76,7 +77,7 @@ export default function PedidosPage() {
       </div>
 
       <Input
-        placeholder="Buscar por cliente, telefone ou #código…"
+        placeholder="Buscar por cliente, telefone, endereço ou #código…"
         value={q}
         onChange={(e) => setQ(e.target.value)}
         className="max-w-md"
@@ -106,6 +107,11 @@ export default function PedidosPage() {
                     <p className="truncate text-xs text-muted-foreground">
                       {o.customer.phone} · {o.items.length} itens · {formatBRL(o.total)}
                     </p>
+                    {o.customer.address ? (
+                      <p className="truncate text-xs text-muted-foreground">
+                        {o.customer.address}
+                      </p>
+                    ) : null}
                   </div>
                   <div className="flex items-center gap-3">
                     <span className="text-xs text-muted-foreground">

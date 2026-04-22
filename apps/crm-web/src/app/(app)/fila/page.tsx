@@ -15,7 +15,7 @@ import {
   DialogTitle,
 } from '@menvi/ui';
 import { cn, formatBRL, formatOrderCode, orderStatusColor, orderStatusLabel } from '@menvi/utils';
-import { Clock, MapPin, Phone, X } from 'lucide-react';
+import { Clock, MapPin, Phone, StickyNote, X } from 'lucide-react';
 import { listOrders, updateOrderStatus } from '@/lib/api';
 import { useAuthStore } from '@/lib/auth-store';
 
@@ -241,9 +241,15 @@ function OrderDetailDialog({ order, onClose, onAdvance, onCancel, mutating }: De
                 <Phone className="h-3.5 w-3.5" />
                 {order.customer.phone}
               </p>
+              {order.customer.address ? (
+                <p className="flex items-start gap-2 text-muted-foreground">
+                  <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+                  {order.customer.address}
+                </p>
+              ) : null}
               {order.notes ? (
                 <p className="flex items-start gap-2 text-muted-foreground">
-                  <MapPin className="mt-0.5 h-3.5 w-3.5" />
+                  <StickyNote className="mt-0.5 h-3.5 w-3.5 shrink-0" />
                   {order.notes}
                 </p>
               ) : null}

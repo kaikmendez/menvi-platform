@@ -86,6 +86,7 @@ export interface OrderCustomerMini {
   id: string;
   name: string;
   phone: string;
+  address?: string | null;
 }
 
 export interface OrderEvent {
