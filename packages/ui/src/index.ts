@@ -25,3 +25,14 @@ export {
 export { RadioGroup, RadioGroupItem } from './components/radio-group';
 export { Separator } from './components/separator';
 export { Textarea } from './components/textarea';
+export {
+  Sheet,
+  SheetTrigger,
+  SheetClose,
+  SheetContent,
+  SheetHeader,
+  SheetFooter,
+  SheetTitle,
+  SheetDescription,
+} from './components/sheet';
+export { Switch } from './components/switch';

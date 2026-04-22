@@ -15,6 +15,7 @@ from apps.api.domain.customers import models as _customers  # noqa: F401
 from apps.api.domain.menu import models as _menu  # noqa: F401
 from apps.api.domain.orders import models as _orders  # noqa: F401
 from apps.api.domain.payments import models as _payments  # noqa: F401
+from apps.api.domain.push import models as _push  # noqa: F401
 from apps.api.domain.restaurants import models as _restaurants  # noqa: F401
 from apps.api.domain.users import models as _users  # noqa: F401
 

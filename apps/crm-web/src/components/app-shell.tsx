@@ -45,7 +45,7 @@ const NAV_ITEMS: NavItem[] = [
     disabled: true,
     roles: ['OWNER', 'MANAGER'],
   },
-  { href: '/configuracoes', label: 'Configurações', icon: Settings, disabled: true, roles: ['OWNER'] },
+  { href: '/configuracoes', label: 'Configurações', icon: Settings, roles: ['OWNER'] },
 ];
 
 export function AppShell({ children }: { children: React.ReactNode }) {
@@ -94,15 +94,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex min-h-screen bg-muted/20">
-      <aside className="hidden w-60 shrink-0 border-r bg-background lg:flex lg:flex-col">
+      <aside className="hidden w-60 shrink-0 border-r border-sidebar-border bg-sidebar text-sidebar-foreground lg:flex lg:flex-col">
         <div className="px-5 py-6">
           <Link href="/painel" className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-sm font-bold text-primary-foreground">
               M
             </div>
             <div className="leading-tight">
-              <p className="text-sm font-semibold">Menvi</p>
-              <p className="text-xs text-muted-foreground">CRM</p>
+              <p className="text-sm font-semibold text-white">Menvi</p>
+              <p className="text-xs text-sidebar-muted">CRM</p>
             </div>
           </Link>
         </div>
@@ -121,32 +121,35 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 className={cn(
                   'flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors',
                   active
-                    ? 'bg-primary/10 font-medium text-primary'
-                    : 'text-muted-foreground hover:bg-accent hover:text-foreground',
-                  item.disabled && 'cursor-not-allowed opacity-50',
+                    ? 'bg-primary/15 font-medium text-primary'
+                    : 'text-sidebar-foreground hover:bg-sidebar-accent hover:text-white',
+                  item.disabled && 'cursor-not-allowed opacity-50 hover:bg-transparent hover:text-sidebar-foreground',
                 )}
               >
                 <Icon className="h-4 w-4" />
                 <span className="flex-1">{item.label}</span>
                 {item.disabled ? (
-                  <span className="text-[10px] uppercase text-muted-foreground">em breve</span>
+                  <span className="text-[10px] uppercase text-sidebar-muted">em breve</span>
                 ) : null}
               </Link>
             );
           })}
         </nav>
-        <div className="border-t p-4">
+        <div className="border-t border-sidebar-border p-4">
           <div className="mb-3">
-            <p className="truncate text-sm font-medium">{user?.name ?? 'Usuário'}</p>
-            <p className="truncate text-xs text-muted-foreground">{user?.email}</p>
-            <Badge variant="outline" className="mt-2 capitalize">
+            <p className="truncate text-sm font-medium text-white">{user?.name ?? 'Usuário'}</p>
+            <p className="truncate text-xs text-sidebar-muted">{user?.email}</p>
+            <Badge
+              variant="outline"
+              className="mt-2 border-sidebar-border bg-sidebar-accent capitalize text-sidebar-foreground"
+            >
               {role.toLowerCase()}
             </Badge>
           </div>
           <Button
             variant="outline"
             size="sm"
-            className="w-full justify-start gap-2"
+            className="w-full justify-start gap-2 border-sidebar-border bg-transparent text-sidebar-foreground hover:bg-sidebar-accent hover:text-white"
             onClick={handleLogout}
           >
             <LogOut className="h-4 w-4" />

@@ -189,6 +189,15 @@ export interface RestaurantSettings {
   opening_hours: string | null;
 }
 
+export interface RestaurantSettingsUpdatePayload {
+  delivery_fee?: string;
+  min_order_amount?: string;
+  accepts_pix?: boolean;
+  accepts_card?: boolean;
+  accepts_cash?: boolean;
+  opening_hours?: string | null;
+}
+
 export interface OrderStatusUpdatePayload {
   status: OrderStatus;
   note?: string | null;

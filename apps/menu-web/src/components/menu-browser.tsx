@@ -7,6 +7,7 @@ import { Badge, Button, Card, CardContent } from '@menvi/ui';
 import { formatBRL } from '@menvi/utils';
 import { ShoppingCart } from 'lucide-react';
 import { ProductDialog } from './product-dialog';
+import { CartDrawer } from './cart-drawer';
 import { useCartStore, cartSubtotal } from '@/lib/cart-store';
 
 interface Props {
@@ -15,10 +16,10 @@ interface Props {
 
 export function MenuBrowser({ menu }: Props) {
   const [selected, setSelected] = React.useState<Product | null>(null);
+  const [cartOpen, setCartOpen] = React.useState(false);
   const items = useCartStore((s) => s.items);
   const storeSlug = useCartStore((s) => s.slug);
 
-  // Só conta itens se forem do mesmo restaurante que estou vendo.
   const cartItems = storeSlug === menu.slug ? items : [];
   const cartCount = cartItems.reduce((acc, i) => acc + i.quantity, 0);
   const subtotal = cartSubtotal(cartItems);
@@ -26,25 +27,46 @@ export function MenuBrowser({ menu }: Props) {
   return (
     <>
       <main className="min-h-screen bg-muted/30 pb-32">
-        <header className="bg-primary text-primary-foreground">
-          <div className="container max-w-3xl py-6">
-            <h1 className="text-2xl font-bold sm:text-3xl">{menu.name}</h1>
-            {menu.description ? (
-              <p className="mt-1 text-sm text-primary-foreground/90 sm:text-base">
-                {menu.description}
-              </p>
-            ) : null}
-            <div className="mt-3 flex flex-wrap items-center gap-2 text-sm">
-              <Badge variant={menu.is_open ? 'default' : 'destructive'}>
-                {menu.is_open ? 'Aberto agora' : 'Fechado'}
-              </Badge>
-              <span className="text-primary-foreground/80">
-                Pedido mínimo {formatBRL(menu.min_order_amount)} · Entrega{' '}
-                {formatBRL(menu.delivery_fee)}
-              </span>
+        <header className="sticky top-0 z-30 border-b-2 border-primary bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+          <div className="container flex max-w-3xl items-center justify-between gap-3 py-3">
+            <div className="min-w-0 flex-1">
+              <h1 className="truncate text-lg font-bold sm:text-xl">{menu.name}</h1>
+              <div className="mt-0.5 flex flex-wrap items-center gap-2 text-xs">
+                <Badge
+                  variant={menu.is_open ? 'default' : 'destructive'}
+                  className="px-2 py-0 text-[11px]"
+                >
+                  {menu.is_open ? 'Aberto agora' : 'Fechado'}
+                </Badge>
+                <span className="text-muted-foreground">
+                  Mín. {formatBRL(menu.min_order_amount)} · Entrega {formatBRL(menu.delivery_fee)}
+                </span>
+              </div>
             </div>
+
+            <button
+              type="button"
+              aria-label="Abrir carrinho"
+              onClick={() => setCartOpen(true)}
+              className="relative inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm transition-transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+            >
+              <ShoppingCart className="h-5 w-5" />
+              {cartCount > 0 ? (
+                <span className="absolute -right-1 -top-1 flex h-5 min-w-[20px] items-center justify-center rounded-full bg-destructive px-1 text-[11px] font-bold text-destructive-foreground">
+                  {cartCount > 99 ? '99+' : cartCount}
+                </span>
+              ) : null}
+            </button>
           </div>
         </header>
+
+        {menu.description ? (
+          <div className="border-b bg-muted/40">
+            <div className="container max-w-3xl py-3 text-sm text-muted-foreground">
+              {menu.description}
+            </div>
+          </div>
+        ) : null}
 
         <div className="container max-w-3xl space-y-8 py-6">
           {menu.categories.length === 0 ? (
@@ -102,6 +124,13 @@ export function MenuBrowser({ menu }: Props) {
           }}
         />
       ) : null}
+
+      <CartDrawer
+        slug={menu.slug}
+        isOpen={menu.is_open}
+        open={cartOpen}
+        onOpenChange={setCartOpen}
+      />
 
       {cartCount > 0 && menu.is_open ? (
         <div className="fixed inset-x-0 bottom-0 z-40 border-t bg-background/95 p-3 backdrop-blur supports-[backdrop-filter]:bg-background/80">

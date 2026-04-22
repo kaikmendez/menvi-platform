@@ -13,7 +13,8 @@ import {
   CardTitle,
 } from '@menvi/ui';
 import { formatBRL, orderStatusLabel, orderStatusColor } from '@menvi/utils';
-import { getPublicOrder } from '@/lib/api';
+import { getPublicOrder, getPublicMenu } from '@/lib/api';
+import { NotifyActions } from './notify-actions';
 
 interface Props {
   slug: string;
@@ -34,6 +35,12 @@ export function OrderTracker({ slug, orderId }: Props) {
       const s = q.state.data?.status;
       return s && isTerminal(s) ? false : 5000;
     },
+  });
+
+  const { data: menu } = useQuery({
+    queryKey: ['public-menu', slug],
+    queryFn: () => getPublicMenu(slug),
+    staleTime: 60_000,
   });
 
   if (isLoading) {
@@ -131,6 +138,18 @@ export function OrderTracker({ slug, orderId }: Props) {
             ) : null}
           </CardContent>
         </Card>
+
+        {!isTerminal(data.status) ? (
+          <NotifyActions
+            orderId={data.id}
+            trackingUrl={
+              typeof window !== 'undefined'
+                ? `${window.location.origin}/r/${slug}/pedido/${data.id}`
+                : `/r/${slug}/pedido/${data.id}`
+            }
+            restaurantName={menu?.name ?? 'restaurante'}
+          />
+        ) : null}
 
         <Button asChild variant="outline" className="w-full">
           <Link href={`/r/${slug}`}>Voltar ao cardápio</Link>

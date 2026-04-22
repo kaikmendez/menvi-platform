@@ -3,14 +3,24 @@ from __future__ import annotations
 from fastapi import APIRouter, Depends, Query, WebSocket, WebSocketDisconnect
 from sqlalchemy.orm import Session
 
+from ...core.config import settings as app_settings
 from ...core.db import get_db
 from ...core.deps import CurrentUser, get_current_user
 from ...core.errors import Unauthorized
 from ...core.realtime import hub
 from ...core.security import decode_token
+from ..push import service as push_service
 from . import service
 from .models import OrderStatus
 from .schemas import OrderOut, OrderStatusUpdateIn
+
+_STATUS_MESSAGES: dict[OrderStatus, str] = {
+    OrderStatus.CONFIRMED: 'Pedido confirmado pelo restaurante.',
+    OrderStatus.PREPARING: 'Seu pedido está sendo preparado.',
+    OrderStatus.READY: 'Seu pedido está pronto!',
+    OrderStatus.DELIVERED: 'Pedido entregue. Bom apetite!',
+    OrderStatus.CANCELLED: 'Seu pedido foi cancelado.',
+}
 
 router = APIRouter(prefix='/crm/orders', tags=['orders'])
 
@@ -53,6 +63,16 @@ def update_status(
     )
     out = OrderOut.model_validate(order)
     hub.publish_sync(current_user.restaurant_id, 'order.status_changed', out.model_dump(mode='json'))
+
+    message = _STATUS_MESSAGES.get(order.status)
+    if message:
+        push_service.send_to_order(
+            db,
+            order,
+            title=f'Pedido #{order.code}',
+            body=message,
+            url=f'{app_settings.menu_web_url.rstrip("/")}/r/{order.restaurant.slug}/pedido/{order.id}',
+        )
     return out
 
 

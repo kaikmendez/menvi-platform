@@ -8,6 +8,7 @@ import type {
   CategoryUpdatePayload,
   Product,
   ProductCreatePayload,
+  ProductOption,
   ProductUpdatePayload,
 } from '@menvi/types';
 import {
@@ -27,14 +28,18 @@ import {
 import { cn, formatBRL } from '@menvi/utils';
 import { Pencil, Plus, Trash2 } from 'lucide-react';
 import {
+  addProductOption,
   createCategory,
   createProduct,
   deleteCategory,
   deleteProduct,
+  deleteProductOption,
+  getProduct,
   listCategories,
   listProducts,
   updateCategory,
   updateProduct,
+  updateProductOption,
 } from '@/lib/api';
 import { useAuthStore } from '@/lib/auth-store';
 
@@ -585,6 +590,13 @@ function ProductDialog({ state, categories, onClose }: ProductDialogProps) {
             />
             Produto disponível (aparece no cardápio)
           </label>
+          {state?.mode === 'edit' ? (
+            <ProductOptionsManager productId={state.product.id} />
+          ) : (
+            <p className="rounded-md border border-dashed p-3 text-xs text-muted-foreground">
+              Salve o produto para depois cadastrar adicionais (ex.: bacon, queijo extra).
+            </p>
+          )}
           <DialogFooter>
             <Button type="button" variant="outline" onClick={onClose}>
               Cancelar
@@ -604,5 +616,134 @@ function ProductDialog({ state, categories, onClose }: ProductDialogProps) {
         </form>
       </DialogContent>
     </Dialog>
+  );
+}
+
+function ProductOptionsManager({ productId }: { productId: string }) {
+  const token = useAuthStore((s) => s.accessToken);
+  const qc = useQueryClient();
+
+  const { data: product } = useQuery({
+    queryKey: ['product', productId, token],
+    queryFn: () => getProduct(token!, productId),
+    enabled: Boolean(token),
+  });
+
+  const [newName, setNewName] = React.useState('');
+  const [newPrice, setNewPrice] = React.useState('');
+
+  const invalidate = () => {
+    qc.invalidateQueries({ queryKey: ['product', productId] });
+    qc.invalidateQueries({ queryKey: ['products'] });
+  };
+
+  const addMutation = useMutation({
+    mutationFn: async () => {
+      const priceDelta = (newPrice || '0').replace(',', '.');
+      return addProductOption(token!, productId, {
+        name: newName.trim(),
+        price_delta: priceDelta,
+      });
+    },
+    onSuccess: () => {
+      setNewName('');
+      setNewPrice('');
+      invalidate();
+    },
+  });
+
+  const toggleMutation = useMutation({
+    mutationFn: (opt: ProductOption) =>
+      updateProductOption(token!, productId, opt.id, { is_available: !opt.is_available }),
+    onSuccess: invalidate,
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (optionId: string) => deleteProductOption(token!, productId, optionId),
+    onSuccess: invalidate,
+  });
+
+  const options = product?.options ?? [];
+
+  return (
+    <div className="space-y-2 rounded-md border p-3">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-sm font-medium">Adicionais</p>
+          <p className="text-xs text-muted-foreground">
+            Ex.: bacon (+R$ 3,00), queijo extra (+R$ 2,00).
+          </p>
+        </div>
+        <Badge variant="outline">{options.length}</Badge>
+      </div>
+
+      {options.length === 0 ? (
+        <p className="py-2 text-center text-xs text-muted-foreground">
+          Nenhum adicional cadastrado.
+        </p>
+      ) : (
+        <ul className="divide-y">
+          {options.map((o) => (
+            <li key={o.id} className="flex items-center gap-2 py-2">
+              <div className="flex-1">
+                <p
+                  className={cn(
+                    'text-sm font-medium',
+                    !o.is_available && 'text-muted-foreground line-through',
+                  )}
+                >
+                  {o.name}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  +{formatBRL(o.price_delta)}
+                </p>
+              </div>
+              <IconButton
+                title={o.is_available ? 'Pausar' : 'Ativar'}
+                onClick={() => toggleMutation.mutate(o)}
+              >
+                <span className="text-xs">{o.is_available ? 'Pausar' : 'Ativar'}</span>
+              </IconButton>
+              <IconButton
+                title="Excluir"
+                onClick={() => {
+                  if (confirm(`Excluir adicional "${o.name}"?`)) {
+                    deleteMutation.mutate(o.id);
+                  }
+                }}
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+              </IconButton>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <div className="flex flex-col gap-2 border-t pt-3 sm:flex-row">
+        <Input
+          placeholder="Nome (ex.: Bacon)"
+          value={newName}
+          onChange={(e) => setNewName(e.target.value)}
+          className="flex-1"
+        />
+        <Input
+          placeholder="+R$ 0,00"
+          value={newPrice}
+          onChange={(e) => setNewPrice(e.target.value)}
+          inputMode="decimal"
+          className="sm:w-28"
+        />
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() => addMutation.mutate()}
+          disabled={!newName.trim() || addMutation.isPending}
+        >
+          <Plus className="mr-1 h-3 w-3" />
+          Adicionar
+        </Button>
+      </div>
+    </div>
   );
 }

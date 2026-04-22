@@ -36,3 +36,21 @@ export async function createOrder(slug: string, payload: OrderCreatePayload): Pr
 export async function getPublicOrder(orderId: string): Promise<PublicOrder> {
   return apiGet<PublicOrder>(`/public/orders/${orderId}`, { cache: 'no-store' });
 }
+
+export async function getVapidPublicKey(): Promise<{ public_key: string | null }> {
+  return apiGet<{ public_key: string | null }>(`/public/push/vapid-public-key`, {
+    cache: 'no-store',
+  });
+}
+
+export interface PushSubscribePayload {
+  endpoint: string;
+  keys: { p256dh: string; auth: string };
+}
+
+export async function subscribeOrderPush(
+  orderId: string,
+  payload: PushSubscribePayload,
+): Promise<{ ok: boolean }> {
+  return apiPost<{ ok: boolean }>(`/public/orders/${orderId}/push/subscribe`, payload);
+}
