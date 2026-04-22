@@ -66,6 +66,7 @@ class OrderCustomerMini(BaseModel):
     id: str
     name: str
     phone: str
+    address: str | None = None
 
 
 class OrderOut(BaseModel):
